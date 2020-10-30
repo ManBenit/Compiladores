@@ -59,5 +59,7 @@ public class Ejemplo {
         a10.cTransitiva();
         System.out.println(a10);
         System.out.println("");
+        
+        
     }
 }
