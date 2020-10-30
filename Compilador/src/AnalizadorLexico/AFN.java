@@ -203,11 +203,37 @@ public class AFN {
         return cerraduraEpsilon(mover(E, s));
     }
     
+    public static AFN unificarInicial(ArrayList<AFN> afns){
+        AFN defAfn= new AFN("AFNTOTAL");
+        Estado inicialTotal= new Estado(true, false, null);
+        int nuevosId=1;
+        
+        inicialTotal.nuevoId(0);
+        defAfn.estados.add(inicialTotal);
+        
+        for(AFN afn: afns){
+            inicialTotal.agregarTransicion(afn.estadoInicial());
+            afn.estadoInicial().cambiarInicial();
+            for(Estado e: afn.estados()){
+                e.nuevoId(nuevosId);
+                defAfn.estados.add(e);
+                nuevosId+=1;
+            }
+        }
+        
+        return defAfn;
+    }
+    
+    
     @Override
     public String toString(){
         ArrayList<Estado> ctrlImp= new ArrayList<>();
         StringBuilder sb= new StringBuilder();
-        sb.append("*****************AFN de ").append(claseLexica).append("*********************");
+        if(claseLexica.equals("AFNTOTAL"))
+            sb.append("***************** AFN total ********************");
+        else
+            sb.append("***************** AFN de ").append(claseLexica).append(" *************************");
+        
         sb.append("\n");
         sb.append(estados.size()).append(" estados.").append("\n");
         

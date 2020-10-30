@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public class Estado {
     private static int idCuenta=0;
-    private String id;
+    private int id;
     private boolean aceptacion;
     private boolean inicial;
     private HashSet<Transicion> transiciones;
@@ -21,7 +21,7 @@ public class Estado {
                 this.token=token;
         else
             this.token=0;
-        id= "S"+idCuenta;
+        id= idCuenta;
         idCuenta+=1;
     }
     
@@ -44,11 +44,11 @@ public class Estado {
     }
     
     public String obtNombre(){
-        return id;
+        return "S"+id;
     }
     
     public void nuevoId(int id){
-        this.id= "S"+id;
+        this.id= id;
     }
     
     public boolean esAceptacion(){
@@ -84,7 +84,7 @@ public class Estado {
     public String toString(){
         StringBuilder sb= new StringBuilder();
         
-        sb.append(id).append(": ");
+        sb.append("S").append(id).append(": ");
         
         if(aceptacion)
             sb.append("[ACEPTACIÓN], ");
