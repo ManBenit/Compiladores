@@ -13,7 +13,6 @@ import java.util.ArrayList;
 public class Ejemplo {
     public static void main(String[] args){
         String rutaCarga= adaptarRuta("../DescriptorClases/claslex.txt");
-        System.out.println(rutaCarga);
         ClaseLexica.cargarClasesLexicas(rutaCarga);
         ArrayList<AFN> elementosUnificacion= new ArrayList();
 

@@ -3,7 +3,6 @@ package AnalizadorLexico;
 //Utilizando método de Thompson
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 public class AFN {
     private ArrayList<Character> alfabeto;
@@ -15,6 +14,8 @@ public class AFN {
         estados= new HashSet();
         alfabeto= ClaseLexica.obtAlfabeto();
         this.claseLexica= claseLexica;
+//        for(Character c: alfabeto)
+//            System.out.print(c+", ");
     }
     
     public void crearBasico(char c){
@@ -152,56 +153,6 @@ public class AFN {
     }
     //////////////////////////////////////////////////////////////////////////////
     
-    
-    public HashSet<Estado> cerraduraEpsilon(Estado e){
-        Estado p;
-        
-        LinkedList S= new LinkedList();
-        HashSet R= new HashSet(); //Estados ya analizados
-        S.push(e);
-        
-        //Se ve cada estado si hay transiciones
-        while(!S.isEmpty()){
-            p= (Estado)S.pop(); //Sacar el propio elemento,
-            R.add(p); //agregarlo a R
-            
-            //Analizar si p tiene transiciones épsilon
-            for(Transicion t: p.obtTransiciones())
-                R.add(t.destino());      
-        }
-        
-        return R;
-    }
-    
-    public HashSet<Estado> cerraduraEpsilon(HashSet<Estado> E){
-        HashSet R= new HashSet();
-        
-        for(Estado e: E)
-            R.addAll(cerraduraEpsilon(e));
-        
-        return R;            
-    }
-    
-    public HashSet<Estado> mover(Estado e, char s){
-        HashSet<Estado> R= new HashSet();
-        for(Transicion t: e.obtTransiciones())
-            if(t.simbolo()==s)
-                R.add(t.destino());
-        
-        return R;
-    }
-    
-    public HashSet<Estado> mover(HashSet<Estado> E, char s){
-        HashSet<Estado> R= new HashSet();
-        for(Estado e: E)
-            R.addAll(mover(e, s));
-        
-        return R;
-    }
-    
-    public HashSet<Estado> irA(HashSet<Estado> E, char s){
-        return cerraduraEpsilon(mover(E, s));
-    }
     
     public static AFN unificarInicial(ArrayList<AFN> afns){
         AFN defAfn= new AFN("AFNTOTAL");
