@@ -5,47 +5,31 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 public class AFD {
-    private ArrayList<Estado> estados;
+    private LinkedList<Estado> estados;
     private ArrayList<Character> alfabeto;
     private Estado[][] tablaEstados;
-    private String nombre;
-    private int id=0;
+    private final String nombre;
+    private int id=1;
     
     public AFD(String nombre){
-        estados= new ArrayList();
+        alfabeto= new ArrayList();
+        alfabeto.add('L');
+        alfabeto.add('D');
+        alfabeto.add('.');
+        alfabeto.add('M');
+        alfabeto.add('P');
+        alfabeto.add('E');
+        alfabeto.add('T');
+        
+        
+        estados= new LinkedList();
         this.nombre=nombre;
     }
     
-    public AFD convertir(AFN afn){
-        HashSet<HashSet<Estado>> conjEdos= obtConjEdos(afn);
-        tablaEstados= new Estado[conjEdos.size()][alfabeto.size()+1];
-        boolean posible=true;
+    public void convertir(AFN afn){
+        HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
+        //tablaEstados= new Estado[estados.size()][alfabeto.size()+1];
         
-        Estado inicial= new Estado(true, false, null);
-        inicial.nuevoId(id);
-        estados.add(inicial);
-        id+=1;
-        
-        for(HashSet<Estado> E: conjEdos){
-            boolean acept=false; //Saber si algún estado es aceptación
-            //int cont=0; //verificar que en cada AFN hay un solo estado de aceptación
-            int id= 0; //Nuevo id de los estados del AFD
-            Integer token=null;
-            
-            for(Estado e: E){
-                if(e.esAceptacion()){
-                    acept=true; //Hay un estado de aceptación del AFN
-                    token= e.obtToken();
-                }
-            }
-            
-            Estado nvoEdoAFD= new Estado(false, acept, token);
-            nvoEdoAFD.nuevoId(id);
-            id+=1;
-            
-        }
-        
-        return this;
     }
     
     public Estado[][] tablaDeEstados(){
@@ -56,83 +40,73 @@ public class AFD {
         
     }
     
+    //Método que obtiene los conjuntos de estados y asigna los estados de AFD
     private HashSet<HashSet<Estado>> obtConjEdos(AFN afn){
+        HashSet<Estado> cEstados= new HashSet();
         HashSet<HashSet<Estado>> R= new HashSet();
+        LinkedList<HashSet<Estado>> S= new LinkedList();
         
         boolean acept=false; //Saber si algún estado es aceptación
+        boolean ini=false; //Saber si algún estado es inicial (solo debe haber uno)
         //int cont=0; //verificar que en cada AFN hay un solo estado de aceptación
-        int id= 0; //Nuevo id de los estados del AFD
         Integer token=null;
         
-        HashSet<Estado> c_e_0= cerraduraEpsilon(afn.estadoInicial());
+        //Calcular S0
+        cEstados= cerraduraEpsilon(afn.estadoInicial());
+        S.add(cEstados);
         
+        //Agregar estado inicial
+        for(Estado e: cEstados)
+            if(e.esAceptacion()){
+                acept=true;
+                token= e.obtToken();
+            }
+        Estado inicial= new Estado(true, acept, token);
+        inicial.nuevoId(0);
+        estados.add(inicial);
         
-        
+        //Reinicio
+        acept=false;
+        token=null;
         
         
         int i=0;
-        while(i<R.size()){
-            for(HashSet<Estado> C: R){
-                if(R.size()==1){ //Si solo hay 1, es el inicial y a fuerza se incluye
-                    for(Estado e: C){
+        while(i<S.size()){
+            cEstados= S.pop();
+            
+            System.out.println("\nAnálisis de S"+i);
+            for(char s: alfabeto){
+                System.out.println("Símbolo "+s);
+                HashSet<Estado> ira= irA(cEstados, s);
+                if(ira.size()>0){
+                    
+                    //Verificar acceptación
+                    for(Estado e: ira)
                         if(e.esAceptacion()){
-                            acept=true; //Hay un estado de aceptación del AFN
+                            acept=true;
                             token= e.obtToken();
                         }
-                    }
-                    Estado inicial= new Estado(true, acept, token);
-                    inicial.nuevoId(id);
-                    estados.add(inicial);
+                    Estado nvoEdo= new Estado(false, acept, token);
+                    nvoEdo.nuevoId(id);
+                    estados.get(i).agregarTransicion(s, nvoEdo);
+                    estados.add(nvoEdo);
+                    S.add(ira);
+                    R.add(ira);
+                    
+                    for(Estado v: ira)
+                        System.out.println(v);
+                    
                     id+=1;
-                    
-                    
-                    //Reiniciar variables de control
-                    acept=false;
-                    token=null;
                 }
-                else{
-                    for(char s: alfabeto){
-                        if(irA(C, s).size()>0){
-                            Estado nvoEdoAFD= new Estado(false, acept, token);
-                            nvoEdoAFD.nuevoId(id);
-                            id+=1;
-
-                            R.add(C);
-                        }
-                    
-                    }
-                }
-            }
+                
+                //Reiniciar variables
+                acept=false;
+                ini=false;
+                token=null;
+            } 
+            System.out.println("");
             i+=1;
         }
-        
-        
-        
-        
-        
-        
-        /*for(HashSet<Estado> E: conjEdos){
-            boolean acept=false; //Saber si algún estado es aceptación
-            //int cont=0; //verificar que en cada AFN hay un solo estado de aceptación
-            int id= 0; //Nuevo id de los estados del AFD
-            Integer token=null;
-            
-            for(Estado e: E){
-                if(e.esAceptacion()){
-                    acept=true; //Hay un estado de aceptación del AFN
-                    token= e.obtToken();
-                }
-            }
-            
-            Estado nvoEdoAFD= new Estado(false, acept, token);
-            nvoEdoAFD.nuevoId(id);
-            id+=1;
-            
-        }
-        
-        */
-        
-        
         
         return R;
     }
@@ -142,18 +116,19 @@ public class AFD {
     private HashSet<Estado> cerraduraEpsilon(Estado e){
         Estado p;
         
-        LinkedList S= new LinkedList();
-        HashSet R= new HashSet(); //Estados ya analizados
+        LinkedList<Estado> S= new LinkedList();
+        HashSet<Estado> R= new HashSet(); //Estados ya analizados
         S.push(e);
         
         //Se ve cada estado si hay transiciones
         while(!S.isEmpty()){
-            p= (Estado)S.pop(); //Sacar el propio elemento,
+            p= S.pop(); //Sacar el propio elemento,
             R.add(p); //agregarlo a R
             
             //Analizar si p tiene transiciones épsilon
             for(Transicion t: p.obtTransiciones())
-                R.add(t.destino());      
+                if(t.simbolo()=='\0')
+                    S.add(t.destino());    
         }
         
         return R;
@@ -195,6 +170,28 @@ public class AFD {
     
     @Override
     public String toString(){
-        return "AFD "+nombre;
+        ArrayList<Estado> ctrlImp= new ArrayList<>();
+        StringBuilder sb= new StringBuilder();
+        sb.append("***************** AFD ").append(nombre).append(" ***********************");
+        
+        sb.append("\n");
+        sb.append(estados.size()).append(" estados.").append("\n");
+        
+        for(Estado e: estados){
+            if(e.esInicial())
+                sb.append(e).append("\n");
+            
+            if(!ctrlImp.contains(e))
+                if(e.numTransiciones()>0)
+                    for(Transicion t: e.obtTransiciones()){
+                        sb.append(e.obtNombre()).append(t).append("\n");
+                    }
+                    
+            ctrlImp.add(e);
+        }
+        
+        sb.append("**************************************************");
+        
+        return sb.toString();
     }
 }

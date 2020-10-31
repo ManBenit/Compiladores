@@ -3,6 +3,7 @@ package compilador;
 //Este ejemplo crea los autómatas de las clases IDENT, INT, FLOAT, MAS, PROD, TAB
 //vistas en el ejercicio que dejó de tarea hace un tiempo
 
+import AnalizadorLexico.AFD;
 import AnalizadorLexico.AFN;
 import AnalizadorLexico.ClaseLexica;
 import java.io.File;
@@ -75,12 +76,17 @@ public class Ejemplo {
         
         AFN total= AFN.unificarInicial(elementosUnificacion);
         escribir(total, adaptarRuta("../AFN.txt"));
+        
+        AFD afd= new AFD("Tarea autómata");
+        afd.convertir(total);
+        escribir(afd, adaptarRuta("../AFD.txt"));
+        
     }
     
-    private static void escribir(AFN afn, String ruta){
+    private static void escribir(Object afnd, String ruta){
         try{
             FileOutputStream f= new FileOutputStream(new File(ruta));
-            f.write(afn.toString().getBytes());
+            f.write(afnd.toString().getBytes());
         }catch(IOException ex){
             System.out.println("Fallo al escribir\n"+ex);
         }
