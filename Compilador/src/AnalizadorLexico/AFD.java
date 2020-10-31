@@ -27,8 +27,15 @@ public class AFD {
     }
     
     public void convertir(AFN afn){
-        HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
+        LinkedList<Estado> conjEstados= obtConjEdos(afn);
         //tablaEstados= new Estado[estados.size()][alfabeto.size()+1];
+        System.out.println("\n\n");
+        for(Estado e: conjEstados){
+            System.out.println(e);
+            for(Transicion t: e.obtTransiciones())
+            System.out.println(t);
+        }
+        
         
     }
     
@@ -41,13 +48,12 @@ public class AFD {
     }
     
     //Método que obtiene los conjuntos de estados y asigna los estados de AFD
-    private HashSet<HashSet<Estado>> obtConjEdos(AFN afn){
+    private LinkedList<Estado> obtConjEdos(AFN afn){
         HashSet<Estado> cEstados= new HashSet();
-        HashSet<HashSet<Estado>> R= new HashSet();
+        LinkedList<Estado> R= new LinkedList();
         LinkedList<HashSet<Estado>> S= new LinkedList();
         
         boolean acept=false; //Saber si algún estado es aceptación
-        boolean ini=false; //Saber si algún estado es inicial (solo debe haber uno)
         //int cont=0; //verificar que en cada AFN hay un solo estado de aceptación
         Integer token=null;
         
@@ -63,7 +69,7 @@ public class AFD {
             }
         Estado inicial= new Estado(true, acept, token);
         inicial.nuevoId(0);
-        estados.add(inicial);
+        R.add(inicial);
         
         //Reinicio
         acept=false;
@@ -88,10 +94,10 @@ public class AFD {
                         }
                     Estado nvoEdo= new Estado(false, acept, token);
                     nvoEdo.nuevoId(id);
-                    estados.get(i).agregarTransicion(s, nvoEdo);
-                    estados.add(nvoEdo);
+                    R.get(i).agregarTransicion(s, nvoEdo);
+                    R.add(nvoEdo);
                     S.add(ira);
-                    R.add(ira);
+//                    R.add(ira);
                     
                     for(Estado v: ira)
                         System.out.println(v);
@@ -101,7 +107,6 @@ public class AFD {
                 
                 //Reiniciar variables
                 acept=false;
-                ini=false;
                 token=null;
             } 
             System.out.println("");
