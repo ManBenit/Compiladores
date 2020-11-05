@@ -27,17 +27,54 @@ public class AFD {
     }
     
     public void convertir(AFN afn){
+//        Object[] conjEstados= obtConjEdos(afn).toArray();
         HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
+        
         //LinkedList<Estado> conjEstados= obtConjEdos(afn);
-        HashSet<Estado> prueba= new HashSet();
-        HashSet<Estado> pruebaCopia= prueba;
-        LinkedList<Estado> pilaDeComprobacion= new LinkedList<>();
-        Estado p;
-        int i=0;
+        HashSet<Estado> origenes= new HashSet();
+        HashSet<Estado> destinosEpsilon= new HashSet();
+        
+        
+        for(HashSet<Estado> hse: conjEstados)
+            for(Estado e: hse)
+                destinosEpsilon.addAll(mover(e, '\0'));
+            
+        System.out.println("Dest\u0190: "+destinosEpsilon.size());
+        
+        
+        Estado edoAux;
+        for(HashSet<Estado> hse: conjEstados){
+        //for(int i=conjEstados.length-1; i>=0; i--){
+            System.out.println("\n*****************************");
+            for(Estado e: hse){
+            //for(Estado e: (HashSet<Estado>)conjEstados[i]){
+                System.out.println(e);
+                for(Transicion t: e.obtTransiciones()){
+                    edoAux=e;
+                    
+                        if(destinosEpsilon.contains(t.destino())){
+                            while(true){
+                                edoAux= t.destino();///////////
+                            }
+                            
+                        }
+                    
+                }
+                
+            }
+            System.out.println("/////////////////////////////");
+        }
+        
         //tablaEstados= new Estado[estados.size()][alfabeto.size()+1];
         
-        System.out.println("\nÚtiles: "+conjEstados.size());
+        //int utiles= conjEstados.length;
         
+//        HashSet<Estado> R= new HashSet();
+//        for(HashSet<Estado> hs: conjEstados){
+//            
+//        }
+//        
+       
         
         //Renombrar estados
         
@@ -142,6 +179,7 @@ public class AFD {
                     
                     S.add(ira);
                     utiles.add(ira);
+                    
                     
                     for(Estado v: ira)
                         System.out.println(v);
