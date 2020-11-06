@@ -27,55 +27,37 @@ public class AFD {
     }
     
     public void convertir(AFN afn){
-//        Object[] conjEstados= obtConjEdos(afn).toArray();
         HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
         
-        //LinkedList<Estado> conjEstados= obtConjEdos(afn);
-        HashSet<Estado> origenes= new HashSet();
-        HashSet<Estado> destinosEpsilon= new HashSet();
-        
-        
-        for(HashSet<Estado> hse: conjEstados)
-            for(Estado e: hse)
-                destinosEpsilon.addAll(mover(e, '\0'));
-            
-        System.out.println("Dest\u0190: "+destinosEpsilon.size());
+//        HashSet<Estado> origenes= new HashSet();
+//        HashSet<Estado> destinosEpsilon= new HashSet();
+//        
+//        
+//        for(HashSet<Estado> hse: conjEstados)
+//            for(Estado e: hse)
+//                destinosEpsilon.addAll(mover(e, '\0'));
+//            
+//        System.out.println("Dest\u0190: "+destinosEpsilon.size());
         
         
         Estado edoAux;
-        for(HashSet<Estado> hse: conjEstados){
-        //for(int i=conjEstados.length-1; i>=0; i--){
+        HashSet<Estado> conjAux= new HashSet();
+        for(HashSet<Estado> i: conjEstados){
             System.out.println("\n*****************************");
-            for(Estado e: hse){
-            //for(Estado e: (HashSet<Estado>)conjEstados[i]){
-                System.out.println(e);
-                for(Transicion t: e.obtTransiciones()){
-                    edoAux=e;
-                    
-                        if(destinosEpsilon.contains(t.destino())){
-                            while(true){
-                                edoAux= t.destino();///////////
-                            }
-                            
-                        }
-                    
+            //Estado nvoEstado= new Estado(true, true, id)
+            for(char s: alfabeto){
+                conjAux= mover(i, s);
+                if(conjAux.size()>0){
+
                 }
-                
             }
+                
+            
+            
+            
             System.out.println("/////////////////////////////");
         }
-        
-        //tablaEstados= new Estado[estados.size()][alfabeto.size()+1];
-        
-        //int utiles= conjEstados.length;
-        
-//        HashSet<Estado> R= new HashSet();
-//        for(HashSet<Estado> hs: conjEstados){
-//            
-//        }
-//        
        
-        
         //Renombrar estados
         
     }
