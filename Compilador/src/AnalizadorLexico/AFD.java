@@ -139,6 +139,7 @@ public class AFD {
     }*/
     
     private HashSet<HashSet<Estado>> obtConjEdos(AFN afn){
+        //sdfsdkjfdaskjd
         HashSet<Estado> cEstados= new HashSet();
         LinkedList<HashSet<Estado>> S= new LinkedList();
         HashSet<HashSet<Estado>> utiles= new HashSet();
