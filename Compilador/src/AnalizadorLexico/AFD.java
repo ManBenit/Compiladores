@@ -54,36 +54,40 @@ public class AFD {
         for(HashSet<Estado> conjunto: conjEstados){//Recorrer cada conjunto de estados
             
             
-            
-            //for(Estado e: conjunto){
-                System.out.println("--------------conjunto---------------");
-                
-                //Posición en la table de estados
-                HashSet<Estado> conjaux= new HashSet();//Para el resultado del mover.
-                for(char c: alfabeto){
-                    conjaux= mover(conjunto, c);
-                    if(conjaux.size()>0){
-                        System.out.println("SIMBOLO: "+c);
-                        System.out.println("IR A");
-                        for(Estado e: conjaux){
-                            System.out.println(e);
-                            System.out.println();
-                            
-                                
-                            tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
-                            if(e.esAceptacion())
-                                tokenRelacionado= e.obtToken();
-                                
-                            
-                            
-                        }
-                        tablaEstados[indFil][alfabeto.size()]= tokenRelacionado; //Asignar el token en la última columna (vector de tokens)
-                        System.out.println("+++++++++++++");
-                    }
+            tokenRelacionado=0;
+            System.out.println("--------------conjunto---------------");
+            System.out.println("***ACEPTACIONES***");
+            for(Estado e: conjunto){
+                if(e.esAceptacion()){
+                    System.out.println(e);
+                    tokenRelacionado=e.obtToken();
+                    break;
                 }
+            }
+            System.out.println("Token: "+tokenRelacionado);
+            tablaEstados[indFil][alfabeto.size()]= tokenRelacionado;
+            System.out.println("******************");
+
+            //Posición en la table de estados
+            HashSet<Estado> conjaux= new HashSet();//Para el resultado del mover.
+            for(char c: alfabeto){
+                conjaux= mover(conjunto, c);
+                //if(conjaux.size()>0){
+                    System.out.println("SIMBOLO: "+c);
+                    System.out.println("IR A");
+                    for(Estado e: conjaux){
+                        System.out.println(e);
+                        System.out.println();
+
+
+                        tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
+                        
+                    }
+                    System.out.println("+++++++++++++");
+                //}
+            }
                 
                
-            //}
             indFil+=1;
             ini=false;
         }
