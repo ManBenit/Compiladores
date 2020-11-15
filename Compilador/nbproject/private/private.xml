@@ -3,7 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/E:/GitHub/Compiladores/Compilador/src/AnalizadorLexico/AFD.java</file>
+            <file>file:/home/uemiliob98/ESCOM-LENY/Compiladores/GitHub/Compilador/src/AnalizadorLexico/AFN.java</file>
+            <file>file:/home/uemiliob98/ESCOM-LENY/Compiladores/GitHub/Compilador/src/compilador/Ejemplo.java</file>
+            <file>file:/home/uemiliob98/ESCOM-LENY/Compiladores/GitHub/Compilador/src/AnalizadorLexico/AFD.java</file>
+            <file>file:/home/uemiliob98/ESCOM-LENY/Compiladores/GitHub/Compilador/src/AnalizadorLexico/Estado.java</file>
+            <file>file:/home/uemiliob98/ESCOM-LENY/Compiladores/GitHub/Compilador/src/compilador/Compilador.java</file>
+            <file>file:/home/uemiliob98/ESCOM-LENY/Compiladores/GitHub/Compilador/src/AnalizadorLexico/ClaseLexica.java</file>
         </group>
     </open-files>
 </project-private>

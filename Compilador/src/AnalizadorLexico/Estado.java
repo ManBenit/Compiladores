@@ -43,6 +43,10 @@ public class Estado {
         return token;
     }
     
+    public int id(){ //tentativo a quitarse
+        return id;
+    }
+    
     public String obtNombre(){
         return "S"+id;
     }

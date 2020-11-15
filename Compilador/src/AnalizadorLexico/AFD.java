@@ -7,7 +7,7 @@ import java.util.LinkedList;
 public class AFD {
     private HashSet<Estado> estados;
     private ArrayList<Character> alfabeto;
-    private Estado[][] tablaEstados;
+    private int[][] tablaEstados;
     private final String nombre;
     private int id=1;
     
@@ -28,41 +28,80 @@ public class AFD {
     
     public void convertir(AFN afn){
         HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
-        
-//        HashSet<Estado> origenes= new HashSet();
-//        HashSet<Estado> destinosEpsilon= new HashSet();
-//        
-//        
-//        for(HashSet<Estado> hse: conjEstados)
-//            for(Estado e: hse)
-//                destinosEpsilon.addAll(mover(e, '\0'));
-//            
-//        System.out.println("Dest\u0190: "+destinosEpsilon.size());
+        tablaEstados= new int[conjEstados.size()][alfabeto.size()+1];
+        //Iniciar tabla con todos los vlaores en -1, excepto el vector de tokens
+        for(int i=0; i<conjEstados.size(); i++)
+            for(int j=0; j<alfabeto.size(); j++)
+                tablaEstados[i][j]=-1;
+            
         
         
-        Estado edoAux;
-        HashSet<Estado> conjAux= new HashSet();
-        for(HashSet<Estado> i: conjEstados){
-            System.out.println("\n*****************************");
-            //Estado nvoEstado= new Estado(true, true, id)
-            for(char s: alfabeto){
-                conjAux= mover(i, s);
-                if(conjAux.size()>0){
-
-                }
-            }
+//        System.out.println("Dest\u0190: "+conjEstados.size());
+//        for(HashSet<Estado> conjunto: conjEstados){//Recorrer cada conjunto de estados
+//            System.out.println("/////////********************************");
+//            for(Estado e: conjunto){
+//                System.out.println(e);
+//                for(Transicion t: e.obtTransiciones())
+//                    System.out.println(t);
+//            }
+//            System.out.println("/////////////////////////////////////////");
+//            System.out.println("");
+//        }
+        
+        int indFil=0;
+        int tokenRelacionado=0;
+        boolean acep=false, ini=false;
+        for(HashSet<Estado> conjunto: conjEstados){//Recorrer cada conjunto de estados
+            
+            
+            
+            //for(Estado e: conjunto){
+                System.out.println("--------------conjunto---------------");
                 
-            
-            
-            
-            System.out.println("/////////////////////////////");
+                //Posición en la table de estados
+                HashSet<Estado> conjaux= new HashSet();//Para el resultado del mover.
+                for(char c: alfabeto){
+                    conjaux= mover(conjunto, c);
+                    if(conjaux.size()>0){
+                        System.out.println("SIMBOLO: "+c);
+                        System.out.println("IR A");
+                        for(Estado e: conjaux){
+                            System.out.println(e);
+                            System.out.println();
+                            
+                                
+                            tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
+                            if(e.esAceptacion())
+                                tokenRelacionado= e.obtToken();
+                                
+                            
+                            
+                        }
+                        tablaEstados[indFil][alfabeto.size()]= tokenRelacionado; //Asignar el token en la última columna (vector de tokens)
+                        System.out.println("+++++++++++++");
+                    }
+                }
+                
+               
+            //}
+            indFil+=1;
+            ini=false;
         }
        
         //Renombrar estados
         
     }
     
-    public Estado[][] tablaDeEstados(){
+    public int[][] tablaDeEstados(){
+        for(char s: alfabeto)
+            System.out.print(s+"\t");
+        System.out.println("");
+        for(int[] ae: tablaEstados){
+            for(int e: ae){
+                System.out.print(e+"\t");
+            }
+            System.out.println("");
+        }
         return tablaEstados;
     }
     
@@ -152,19 +191,19 @@ public class AFD {
         while(i<S.size()){
             cEstados= S.pop();
             
-            System.out.println("\nAnálisis de S"+i);
+//            System.out.println("\nAnálisis de S"+i);
             for(char s: alfabeto){
                 
                 HashSet<Estado> ira= irA(cEstados, s);
                 if(ira.size()>0){
-                    System.out.println("Símbolo "+s);
+//                    System.out.println("Símbolo "+s);
                     
                     S.add(ira);
                     utiles.add(ira);
                     
                     
-                    for(Estado v: ira)
-                        System.out.println(v);
+//                    for(Estado v: ira)
+//                        System.out.println(v);
                     
                 }
             }
