@@ -27,18 +27,20 @@ public class AFD {
     }
     
     public void convertir(AFN afn){
-        HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
-        tablaEstados= new int[conjEstados.size()][alfabeto.size()+1];
+        //HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
+        Object[] conjEstados= obtConjEdos(afn).toArray();
+        tablaEstados= new int[conjEstados.length][alfabeto.size()+1];
         //Iniciar tabla con todos los vlaores en -1, excepto el vector de tokens
-        for(int i=0; i<conjEstados.size(); i++)
+        for(int i=0; i<conjEstados.length; i++)
             for(int j=0; j<alfabeto.size(); j++)
                 tablaEstados[i][j]=-1;
         
         LinkedList<Integer> pilaCompuebaNoms= new LinkedList();
              
-        int indFil=conjEstados.size()-1; //Se llena de abajo a arriba para que el estado inicial quede siempre en la primera fila
+        int indFil=0; //Se llena de abajo a arriba para que el estado inicial quede siempre en la primera fila
         int tokenRelacionado;
-        for(HashSet<Estado> conjunto: conjEstados){//Recorrer cada conjunto de estados
+        for(int i=conjEstados.length-1; i>=0; i--){//Recorrer cada conjunto de estados
+            HashSet<Estado> conjunto= (HashSet<Estado>)conjEstados[i];
             //Obtener token para el vector de tokens (última columna)
             tokenRelacionado=0; //si no hay, será 0
             for(Estado e: conjunto)
@@ -52,27 +54,29 @@ public class AFD {
             HashSet<Estado> conjaux;//Para el resultado del mover.
             for(char c: alfabeto){
                 conjaux= mover(conjunto, c);
-                for(Estado e: conjaux){
-//                    if(!pilaCompuebaNoms.contains(e.id())){
-//                        pilaCompuebaNoms.add(e.id());
-//                    }
-                    
-                    //tablaEstados[indFil][alfabeto.indexOf(c)]= pilaCompuebaNoms.indexOf(e.id());
-                    tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
+                if(conjaux.size()>0){
+
+                    for(Estado e: conjaux){
+//                        if(!pilaCompuebaNoms.contains(e.id())){
+//                            pilaCompuebaNoms.add(e.id());
+//                        }
+
+                        tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
+                    }
                 }
             }
             
-            for(int i: pilaCompuebaNoms){
-                System.out.print(i+", ");
+            for(int j: pilaCompuebaNoms){
+                System.out.print(j+", ");
             }
             System.out.println("");
                
-            indFil-=1;
+            indFil+=1;
         }
        
         //Renombrar estados
         
-        for(int i=0; i<conjEstados.size(); i++){
+        for(int i=0; i<conjEstados.length; i++){
             for(int j=0; j<alfabeto.size()+1; j++){
                 
             }
