@@ -9,7 +9,7 @@ public class AFD {
     private ArrayList<Character> alfabeto;
     private int[][] tablaEstados;
     private final String nombre;
-    private int id=1;
+    private int id=0;
     
     public AFD(String nombre){
         alfabeto= new ArrayList();
@@ -33,9 +33,11 @@ public class AFD {
         for(int i=0; i<conjEstados.size(); i++)
             for(int j=0; j<alfabeto.size(); j++)
                 tablaEstados[i][j]=-1;
+        
+        LinkedList<Integer> pilaCompuebaNoms= new LinkedList();
              
-        int indFil=0;
-        int tokenRelacionado=0;
+        int indFil=conjEstados.size()-1; //Se llena de abajo a arriba para que el estado inicial quede siempre en la primera fila
+        int tokenRelacionado;
         for(HashSet<Estado> conjunto: conjEstados){//Recorrer cada conjunto de estados
             //Obtener token para el vector de tokens (última columna)
             tokenRelacionado=0; //si no hay, será 0
@@ -47,17 +49,34 @@ public class AFD {
             tablaEstados[indFil][alfabeto.size()]= tokenRelacionado;
 
             //Posición en la table de estados
-            HashSet<Estado> conjaux= new HashSet();//Para el resultado del mover.
+            HashSet<Estado> conjaux;//Para el resultado del mover.
             for(char c: alfabeto){
                 conjaux= mover(conjunto, c);
-                for(Estado e: conjaux)
+                for(Estado e: conjaux){
+//                    if(!pilaCompuebaNoms.contains(e.id())){
+//                        pilaCompuebaNoms.add(e.id());
+//                    }
+                    
+                    //tablaEstados[indFil][alfabeto.indexOf(c)]= pilaCompuebaNoms.indexOf(e.id());
                     tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
+                }
             }
-                
-            indFil+=1;
+            
+            for(int i: pilaCompuebaNoms){
+                System.out.print(i+", ");
+            }
+            System.out.println("");
+               
+            indFil-=1;
         }
        
         //Renombrar estados
+        
+        for(int i=0; i<conjEstados.size(); i++){
+            for(int j=0; j<alfabeto.size()+1; j++){
+                
+            }
+        }
         
     }
     
@@ -69,106 +88,25 @@ public class AFD {
         return alfabeto;
     }
     
-    private void crearTabla(){
-        
-    }
-    
-    //Método que obtiene los conjuntos de estados y asigna los estados de AFD
-    /*private LinkedList<Estado> obtConjEdos(AFN afn){
-        HashSet<Estado> cEstados= new HashSet();
-        LinkedList<Estado> R= new LinkedList();
-        LinkedList<HashSet<Estado>> S= new LinkedList();
-        
-        boolean acept=false; //Saber si algún estado es aceptación
-        //int cont=0; //verificar que en cada AFN hay un solo estado de aceptación
-        Integer token=null;
-        
-        //Calcular S0
-        cEstados= cerraduraEpsilon(afn.estadoInicial());
-        S.add(cEstados);
-        
-        //Agregar estado inicial
-        for(Estado e: cEstados)
-            if(e.esAceptacion()){
-                acept=true;
-                token= e.obtToken();
-            }
-        Estado inicial= new Estado(true, acept, token);
-        inicial.nuevoId(0);
-        R.add(inicial);
-        
-        //Reinicio
-        acept=false;
-        token=null;
-        
-        int i=0;
-        while(i<S.size()){
-            cEstados= S.pop();
-            
-            System.out.println("\nAnálisis de S"+i);
-            for(char s: alfabeto){
-                
-                HashSet<Estado> ira= irA(cEstados, s);
-                if(ira.size()>0){
-                    System.out.println("Símbolo "+s);
-                    //Verificar acceptación
-                    for(Estado e: ira)
-                        if(e.esAceptacion()){
-                            acept=true;
-                            token= e.obtToken();
-                        }
-                    Estado nvoEdo= new Estado(false, acept, token);
-                    nvoEdo.nuevoId(id);
-                    R.get(i).agregarTransicion(s, nvoEdo);
-                    R.add(nvoEdo);
-                    S.add(ira);
-//                    R.add(ira);
-                    
-                    for(Estado v: ira)
-                        System.out.println(v);
-                    
-                    id+=1;
-                }
-                
-                //Reiniciar variables
-                acept=false;
-                token=null;
-            } 
-            System.out.println("");
-            i+=1;
-        }
-        
-        return R;
-    }*/
-    
     private HashSet<HashSet<Estado>> obtConjEdos(AFN afn){
-        HashSet<Estado> cEstados= new HashSet();
-        LinkedList<HashSet<Estado>> S= new LinkedList();
-        HashSet<HashSet<Estado>> utiles= new HashSet();
+        HashSet<Estado> cEstados= new HashSet(); //Conjuntos de estados a analizar
+        LinkedList<HashSet<Estado>> S= new LinkedList(); //Pila de comprobación
+        HashSet<HashSet<Estado>> utiles= new HashSet(); //Estados que servirán para el AFD
         
         //Calcular S0
         cEstados= cerraduraEpsilon(afn.estadoInicial());
         S.add(cEstados);
         utiles.add(cEstados);
         
+        //Análisis del resto de estados
         int i=0;
         while(i<S.size()){
             cEstados= S.pop();
-            
-//            System.out.println("\nAnálisis de S"+i);
             for(char s: alfabeto){
-                
                 HashSet<Estado> ira= irA(cEstados, s);
                 if(ira.size()>0){
-//                    System.out.println("Símbolo "+s);
-                    
                     S.add(ira);
                     utiles.add(ira);
-                    
-                    
-//                    for(Estado v: ira)
-//                        System.out.println(v);
-                    
                 }
             }
             i+=1;
