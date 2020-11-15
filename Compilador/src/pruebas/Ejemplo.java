@@ -1,4 +1,4 @@
-package compilador;
+package pruebas;
 
 //Este ejemplo crea los autómatas de las clases IDENT, INT, FLOAT, MAS, PROD, TAB
 //vistas en el ejercicio que dejó de tarea hace un tiempo
