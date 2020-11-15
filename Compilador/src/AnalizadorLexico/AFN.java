@@ -5,17 +5,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class AFN {
-    private ArrayList<Character> alfabeto;
     private HashSet<Estado> estados;
     private String claseLexica;
     
     public AFN(String claseLexica){
-        alfabeto= new ArrayList<>();
         estados= new HashSet();
-        alfabeto= ClaseLexica.obtAlfabeto();
         this.claseLexica= claseLexica;
-//        for(Character c: alfabeto)
-//            System.out.print(c+", ");
     }
     
     public void crearBasico(char c){

@@ -81,6 +81,8 @@ public class Ejemplo {
         afd.convertir(total);
         escribir(afd, adaptarRuta("../AFD.txt"));
         
+        imprimirTablaEdos(afd.tablaDeEstados(), afd.alfabeto());
+        
     }
     
     private static void escribir(Object afnd, String ruta){
@@ -89,6 +91,18 @@ public class Ejemplo {
             f.write(afnd.toString().getBytes());
         }catch(IOException ex){
             System.out.println("Fallo al escribir\n"+ex);
+        }
+    }
+    
+    private static void imprimirTablaEdos(int [][] estados, ArrayList<Character> alfabeto){
+        for(char s: alfabeto)
+            System.out.print(s+"\t");
+        System.out.println("");
+        for(int[] ae: estados){
+            for(int e: ae){
+                System.out.print(e+"\t");
+            }
+            System.out.println("");
         }
     }
     

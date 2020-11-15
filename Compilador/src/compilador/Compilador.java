@@ -81,7 +81,8 @@ public class Compilador {
         afd.convertir(total);
         escribir(afd, adaptarRuta("../AFD.txt"));
         
-        afd.tablaDeEstados();
+        
+        imprimirTablaEdos(afd.tablaDeEstados(), afd.alfabeto());
         
 //        //Algún operador, paréntesis o algún símbolo específico (se representa con una letra)
 //        Pattern patron= Pattern.compile("\\*|\\+|\\?|[|]|\\(|\\)|[A-Z]");
@@ -137,6 +138,18 @@ public class Compilador {
             f.write(afn.toString().getBytes());
         }catch(IOException ex){
             //System.out.println("Fallo al escribir\n"+ex);
+        }
+    }
+    
+    private static void imprimirTablaEdos(int [][] estados, ArrayList<Character> alfabeto){
+        for(char s: alfabeto)
+            System.out.print(s+"\t");
+        System.out.println("");
+        for(int[] ae: estados){
+            for(int e: ae){
+                System.out.print(e+"\t");
+            }
+            System.out.println("");
         }
     }
     
