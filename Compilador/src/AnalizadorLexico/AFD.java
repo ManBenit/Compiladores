@@ -27,20 +27,28 @@ public class AFD {
     }
     
     public void convertir(AFN afn){
-        //HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
-        Object[] conjEstados= obtConjEdos(afn).toArray();
-        tablaEstados= new int[conjEstados.length][alfabeto.size()+1];
+        HashSet<HashSet<Estado>> conjEstados= obtConjEdos(afn);
+        Object[] arrayConjEstados= conjEstados.toArray();
+        
         //Iniciar tabla con todos los vlaores en -1, excepto el vector de tokens
-        for(int i=0; i<conjEstados.length; i++)
-            for(int j=0; j<alfabeto.size(); j++)
+        tablaEstados= new int[arrayConjEstados.length][alfabeto.size()+1+1]; //uno extra de tokens(N) y uno de inicial(0)
+        for(int i=0; i<arrayConjEstados.length; i++)
+            for(int j=1; j<alfabeto.size()+1; j++)
                 tablaEstados[i][j]=-1;
         
         LinkedList<Integer> pilaCompuebaNoms= new LinkedList();
              
         int indFil=0; //Se llena de abajo a arriba para que el estado inicial quede siempre en la primera fila
+        int conjContenedor;
         int tokenRelacionado;
-        for(int i=conjEstados.length-1; i>=0; i--){//Recorrer cada conjunto de estados
-            HashSet<Estado> conjunto= (HashSet<Estado>)conjEstados[i];
+        for(int i=arrayConjEstados.length-1; i>=0; i--){//Recorrer cada conjunto de estados
+            HashSet<Estado> conjunto= (HashSet<Estado>)arrayConjEstados[i];
+            
+            System.out.print("S"+indFil+":");
+            for(Estado e: conjunto)
+                System.out.print(e.id()+", ");
+            System.out.println("");
+            
             //Obtener token para el vector de tokens (última columna)
             tokenRelacionado=0; //si no hay, será 0
             for(Estado e: conjunto)
@@ -48,39 +56,35 @@ public class AFD {
                     tokenRelacionado=e.obtToken();
                     break;
                 }
-            tablaEstados[indFil][alfabeto.size()]= tokenRelacionado;
+            tablaEstados[indFil][alfabeto.size()+1]= tokenRelacionado;
+            
+            tablaEstados[indFil][0]= indFil; //Nuevos id de estado *****
 
             //Posición en la table de estados
             HashSet<Estado> conjaux;//Para el resultado del mover.
             for(char c: alfabeto){
-                conjaux= mover(conjunto, c);
+                conjaux= mover(conjunto, c); //Conjunto actual
                 if(conjaux.size()>0){
-
                     for(Estado e: conjaux){
-//                        if(!pilaCompuebaNoms.contains(e.id())){
-//                            pilaCompuebaNoms.add(e.id());
-//                        }
-
-                        tablaEstados[indFil][alfabeto.indexOf(c)]= e.id();
+                        //Ver de qué conjunto (estado) viene
+                        conjContenedor=conjEstados.size()-1; //Debe ser regresivo porque toma el hashset
+                        for( HashSet<Estado> C: conjEstados ){
+                            if(C.contains(e)){
+                                tablaEstados[indFil][alfabeto.indexOf(c)+1]= conjContenedor+1;
+                                break;
+                            }
+                            conjContenedor-=1;
+                        }
+                        
+                        
                     }
                 }
             }
-            
-            for(int j: pilaCompuebaNoms){
-                System.out.print(j+", ");
-            }
-            System.out.println("");
-               
             indFil+=1;
         }
        
         //Renombrar estados
         
-        for(int i=0; i<conjEstados.length; i++){
-            for(int j=0; j<alfabeto.size()+1; j++){
-                
-            }
-        }
         
     }
     
@@ -93,7 +97,7 @@ public class AFD {
     }
     
     private HashSet<HashSet<Estado>> obtConjEdos(AFN afn){
-        HashSet<Estado> cEstados= new HashSet(); //Conjuntos de estados a analizar
+        HashSet<Estado> cEstados; //Conjuntos de estados a analizar
         LinkedList<HashSet<Estado>> S= new LinkedList(); //Pila de comprobación
         HashSet<HashSet<Estado>> utiles= new HashSet(); //Estados que servirán para el AFD
         

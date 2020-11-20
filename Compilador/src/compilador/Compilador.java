@@ -140,6 +140,7 @@ public class Compilador {
     }
     
     private static void imprimirTablaEdos(int [][] estados, ArrayList<Character> alfabeto){
+        System.out.print("\t");
         for(char s: alfabeto)
             System.out.print(s+"\t");
         System.out.println("");
