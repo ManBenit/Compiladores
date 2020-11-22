@@ -43,7 +43,7 @@ public class Estado {
         return token;
     }
     
-    public int id(){ //tentativo a quitarse
+    public int id(){
         return id;
     }
     
