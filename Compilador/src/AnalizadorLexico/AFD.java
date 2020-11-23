@@ -12,6 +12,7 @@ public class AFD{
     private ArrayList<Character> alfabeto;
     private ArrayList<int[]> tablaEstados;
     private final String nombre;
+    private LinkedList<HashSet<Estado>> conjEstados;
     
     public AFD(String nombre){
         tablaEstados= new ArrayList<>();
@@ -30,28 +31,22 @@ public class AFD{
     }
     
     public void convertir(AFN afn){
-        LinkedList<HashSet<Estado>> conjEstados= obtConjEdos(afn);
-        LinkedList<HashSet<Estado>> conjEstadosAux= conjEstados;
-        
-        
-//        for(HashSet<Estado> conjunto: conjEstados){
-//            //System.out.print("S"+i+"= {");
-//            System.out.print("{");
-//            for(Estado e: conjunto)
-//                System.out.print(e+", ");
-//            System.out.println("}");
-//        }
+        conjEstados= obtConjEdos(afn);
         
         //Crear estado para cada subconjunto
-        int id=conjEstados.size()-1;
+        int idDisc=conjEstados.size()-1; //Discriminante del ID
+        int id=0;
         for(HashSet<Estado> conjunto: conjEstados){
             boolean ini= false, acep=false;
             //int id=0;
             int token=0;
             Estado nEdo;
-            
+            System.out.println("vvvvvvvConjuntovvvvv");
             for(Estado e: conjunto){
-                id= e.id();
+                System.out.println(e);
+                //id= e.id();
+                //id= conjunto.size();
+                id= e.obtToken()+idDisc;
                 if(e.esAceptacion()){
                     acep=true;
                     token= e.obtToken();
@@ -62,11 +57,13 @@ public class AFD{
                     break;
                 }
             }
+            System.out.println("^^^^^^^^^^^^^^^");
             
             nEdo= new Estado(ini, acep, token);
             nEdo.nuevoId(id);
             estados.addFirst(nEdo);
-            //id-=1;
+            id+=1;
+            idDisc-=1;
         }
         
         System.out.println(estados.size());
@@ -116,11 +113,20 @@ public class AFD{
     
     //Estado creado que representa un conjunto de estados
     private Estado representante(HashSet<Estado> conjunto){
+        int idDisc=conjEstados.size()-1;
         Estado ret=null;
-        for(Estado edoConj: conjunto)
-            for(Estado e: estados)
-                if(e.id()==edoConj.id())
+        for(Estado edoConj: conjunto){
+            for(Estado e: estados){
+                //if(e.id()==edoConj.obtToken()+idDisc){
+                if(conjEstados.get(idDisc).equals(conjunto)){
                     ret=e;
+                    break;
+                }
+                idDisc-=1;
+            }
+            idDisc=conjEstados.size()-1;
+        }
+                    
         return ret;
     }
     
