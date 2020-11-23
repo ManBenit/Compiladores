@@ -190,7 +190,7 @@ public class AFN {
             if(!ctrlImp.contains(e))
                 if(e.numTransiciones()>0)
                     for(Transicion t: e.obtTransiciones()){
-                        sb.append(e.obtNombre()).append(t).append("\n");
+                        sb.append("S").append(e.id()).append(t).append("\n");
                     }
                     
             ctrlImp.add(e);

@@ -6,13 +6,16 @@ package pruebas;
 import AnalizadorLexico.AFD;
 import AnalizadorLexico.AFN;
 import AnalizadorLexico.ClaseLexica;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 public class Ejemplo {
-    public static void main(String[] args){
+
+    public void verEjemplo(){
         String rutaCarga= adaptarRuta("../DescriptorClases/claslex.txt");
         ClaseLexica.cargarClasesLexicas(rutaCarga);
         ArrayList<AFN> elementosUnificacion= new ArrayList();
@@ -81,28 +84,43 @@ public class Ejemplo {
         afd.convertir(total);
         escribir(afd, adaptarRuta("../AFD.txt"));
         
-        imprimirTablaEdos(afd.tablaDeEstados(), afd.alfabeto());
+        
+        escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
         
     }
     
-    private static void escribir(Object afnd, String ruta){
+    
+    
+    
+    private static void escribir(Object afn, String ruta){
         try{
             FileOutputStream f= new FileOutputStream(new File(ruta));
-            f.write(afnd.toString().getBytes());
+            f.write(afn.toString().getBytes());
         }catch(IOException ex){
-            System.out.println("Fallo al escribir\n"+ex);
+            System.out.println("Fallo al escribir autómata\n"+ex);
         }
     }
     
-    private static void imprimirTablaEdos(int [][] estados, ArrayList<Character> alfabeto){
-        for(char s: alfabeto)
-            System.out.print(s+"\t");
-        System.out.println("");
-        for(int[] ae: estados){
-            for(int e: ae){
-                System.out.print(e+"\t");
+    private static void escribirTablaEdos(int [][] estados, ArrayList<Character> alfabeto, String ruta){
+        File f= new File(ruta);
+        BufferedWriter bw;
+        try{
+            bw= new BufferedWriter(new FileWriter(f));
+            
+            bw.write("\t");
+            for(char s: alfabeto)
+                bw.write(s+"\t");
+            bw.newLine();
+            for(int[] ae: estados){
+                for(int e: ae)
+                    bw.write(e+"\t");
+                bw.newLine();
             }
-            System.out.println("");
+                
+            bw.flush();
+            bw.close();
+        }catch(IOException ex){
+            System.out.println("Fallo al escribir tabla\n"+ex);
         }
     }
     
@@ -112,4 +130,5 @@ public class Ejemplo {
         else
             return ruta;
     }
+    
 }

@@ -33,20 +33,12 @@ public class Estado {
         this.transiciones.add(t);
     }
     
-    public int obtToken(){
+    public int token(){
         return token;
     }
     
-//    public void defToken(int token){
-//        this.token= token;
-//    }
-    
     public int id(){
         return id;
-    }
-    
-    public String obtNombre(){
-        return "S"+id;
     }
     
     public void nuevoId(int id){
