@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ClaseLexica {
+public class ClaseLexicaPrueba {
     //El ArrayList<Object> será de tamaño 3: String nombre, String exp reg, Integer token
     private static ArrayList<ArrayList<Object>> clases= new ArrayList<>();
     //Las posiciones a continuación se definen de acuerdo a donde se encuentre cada

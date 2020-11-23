@@ -5,7 +5,7 @@ package pruebas;
 
 import AnalizadorLexico.AFD;
 import AnalizadorLexico.AFN;
-import AnalizadorLexico.ClaseLexica;
+import AnalizadorLexico.ClaseLexicaPrueba;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,12 +17,12 @@ public class Ejemplo {
 
     public void verEjemplo(){
         String rutaCarga= adaptarRuta("../DescriptorClases/claslex.txt");
-        ClaseLexica.cargarClasesLexicas(rutaCarga);
+        ClaseLexicaPrueba.cargarClasesLexicas(rutaCarga);
         ArrayList<AFN> elementosUnificacion= new ArrayList();
 
-        AFN a1= new AFN(ClaseLexica.obtNomClases()[0]);
-        AFN a2= new AFN(ClaseLexica.obtNomClases()[0]);
-        AFN a3= new AFN(ClaseLexica.obtNomClases()[0]);
+        AFN a1= new AFN(ClaseLexicaPrueba.obtNomClases()[0]);
+        AFN a2= new AFN(ClaseLexicaPrueba.obtNomClases()[0]);
+        AFN a3= new AFN(ClaseLexicaPrueba.obtNomClases()[0]);
         a1.crearBasico('L');
         a2.crearBasico('D');
         a1.unir(a2);
@@ -33,16 +33,16 @@ public class Ejemplo {
         System.out.println(a3);
         System.out.println("");
         
-        AFN a4= new AFN(ClaseLexica.obtNomClases()[1]);
+        AFN a4= new AFN(ClaseLexicaPrueba.obtNomClases()[1]);
         a4.crearBasico('D');
         a4.cTransitiva();
         elementosUnificacion.add(a4);
         System.out.println(a4);
         System.out.println("");
         
-        AFN a5= new AFN(ClaseLexica.obtNomClases()[2]);
-        AFN a6= new AFN(ClaseLexica.obtNomClases()[2]);
-        AFN a7= new AFN(ClaseLexica.obtNomClases()[2]);
+        AFN a5= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
+        AFN a6= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
+        AFN a7= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
         a5.crearBasico('D');
         a6.crearBasico('.');
         a7.crearBasico('D');
@@ -54,20 +54,20 @@ public class Ejemplo {
         System.out.println(a5);
         System.out.println("");
         
-        AFN a8= new AFN(ClaseLexica.obtNomClases()[3]);
+        AFN a8= new AFN(ClaseLexicaPrueba.obtNomClases()[3]);
         a8.crearBasico('M');
         elementosUnificacion.add(a8);
         System.out.println(a8);
         System.out.println("");
         
-        AFN a9= new AFN(ClaseLexica.obtNomClases()[4]);
+        AFN a9= new AFN(ClaseLexicaPrueba.obtNomClases()[4]);
         a9.crearBasico('P');
         elementosUnificacion.add(a9);
         System.out.println(a9);
         System.out.println("");
         
-        AFN a10= new AFN(ClaseLexica.obtNomClases()[5]);
-        AFN a11= new AFN(ClaseLexica.obtNomClases()[5]);
+        AFN a10= new AFN(ClaseLexicaPrueba.obtNomClases()[5]);
+        AFN a11= new AFN(ClaseLexicaPrueba.obtNomClases()[5]);
         a10.crearBasico('E');
         a11.crearBasico('T');
         a10.unir(a11);
