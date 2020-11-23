@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Compilador {
 
@@ -27,15 +25,15 @@ public class Compilador {
         a3.crearBasico('L');
         a3.concatenar(a1);
         elementosUnificacion.add(a3);
-        System.out.println(a3);
-        System.out.println("");
+        //System.out.println(a3);
+        //System.out.println("");
         
         AFN a4= new AFN(ClaseLexica.obtNomClases()[1]);
         a4.crearBasico('D');
         a4.cTransitiva();
         elementosUnificacion.add(a4);
-        System.out.println(a4);
-        System.out.println("");
+        //System.out.println(a4);
+        //System.out.println("");
         
         AFN a5= new AFN(ClaseLexica.obtNomClases()[2]);
         AFN a6= new AFN(ClaseLexica.obtNomClases()[2]);
@@ -48,20 +46,20 @@ public class Compilador {
         a5.concatenar(a6);
         a5.concatenar(a7);
         elementosUnificacion.add(a5);
-        System.out.println(a5);
-        System.out.println("");
+        //System.out.println(a5);
+        //System.out.println("");
         
         AFN a8= new AFN(ClaseLexica.obtNomClases()[3]);
         a8.crearBasico('M');
         elementosUnificacion.add(a8);
-        System.out.println(a8);
-        System.out.println("");
+        //System.out.println(a8);
+        //System.out.println("");
         
         AFN a9= new AFN(ClaseLexica.obtNomClases()[4]);
         a9.crearBasico('P');
         elementosUnificacion.add(a9);
-        System.out.println(a9);
-        System.out.println("");
+        //System.out.println(a9);
+        //System.out.println("");
         
         AFN a10= new AFN(ClaseLexica.obtNomClases()[5]);
         AFN a11= new AFN(ClaseLexica.obtNomClases()[5]);
@@ -70,8 +68,8 @@ public class Compilador {
         a10.unir(a11);
         a10.cTransitiva();
         elementosUnificacion.add(a10);
-        System.out.println(a10);
-        System.out.println("");
+        //System.out.println(a10);
+        //System.out.println("");
         
         
         AFN total= AFN.unificarInicial(elementosUnificacion);
@@ -82,6 +80,7 @@ public class Compilador {
         escribir(afd, adaptarRuta("../AFD.txt"));
         
         
+        //imprimirTablaEdos(afd.tablaDeEstados(), afd.alfabeto());
         
 //        //Algún operador, paréntesis o algún símbolo específico (se representa con una letra)
 //        Pattern patron= Pattern.compile("\\*|\\+|\\?|[|]|\\(|\\)|[A-Z]");
@@ -96,13 +95,13 @@ public class Compilador {
 //        
 //        
 ////        for(String s: regexs)
-////            System.out.println(s);
+////            //System.out.println(s);
 //        
 //        
 //        //Creación de autómatas
 ////        ArrayList<Character> alfa= new ArrayList();
 ////        for(String expreg: regexs){ //Para cada expresión regular,
-////            System.out.println("Regex: "+expreg);
+////            //System.out.println("Regex: "+expreg);
 ////            char[] partesRegex= expreg.toCharArray();
 ////            Matcher matcher;
 ////            
@@ -113,7 +112,7 @@ public class Compilador {
 ////                    char encontrado= matcher.group().charAt(0);
 ////                    if((int)encontrado>=65 && (int)encontrado<=90)
 ////                        
-////                    System.out.println(matcher.group().charAt(0));
+////                    //System.out.println(matcher.group().charAt(0));
 ////                }
 ////                else{
 ////                    alfa.add(partesRegex[i]);
@@ -122,9 +121,9 @@ public class Compilador {
 ////            }
 ////                
 ////        }
-////        System.out.println("****");
+////        //System.out.println("****");
 ////        for(char c: alfa)
-////            System.out.print(c+"- ");
+////            //System.out.print(c+"- ");
 
     }
     
@@ -136,7 +135,20 @@ public class Compilador {
             FileOutputStream f= new FileOutputStream(new File(ruta));
             f.write(afn.toString().getBytes());
         }catch(IOException ex){
-            System.out.println("Fallo al escribir\n"+ex);
+            //System.out.println("Fallo al escribir\n"+ex);
+        }
+    }
+    
+    private static void imprimirTablaEdos(int [][] estados, ArrayList<Character> alfabeto){
+        System.out.print("\t");
+        for(char s: alfabeto)
+            System.out.print(s+"\t");
+        System.out.println("");
+        for(int[] ae: estados){
+            for(int e: ae){
+                System.out.print(e+"\t");
+            }
+            System.out.println("");
         }
     }
     

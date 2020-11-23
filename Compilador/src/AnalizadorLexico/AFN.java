@@ -5,21 +5,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 public class AFN {
-    private ArrayList<Character> alfabeto;
     private HashSet<Estado> estados;
     private String claseLexica;
     
     public AFN(String claseLexica){
-        alfabeto= new ArrayList<>();
         estados= new HashSet();
-        alfabeto= ClaseLexica.obtAlfabeto();
         this.claseLexica= claseLexica;
-//        for(Character c: alfabeto)
-//            System.out.print(c+", ");
     }
     
     public void crearBasico(char c){
-        Estado inicio= new Estado(true, false, null);
+        Estado inicio= new Estado(true, false, 0);
         Estado fin= new Estado(false, true, ClaseLexica.obtToken(claseLexica));
         inicio.agregarTransicion(c, fin);
         estados.add(inicio);
@@ -51,7 +46,7 @@ public class AFN {
     
     // T H O M P S O N /////////////////////////////////////////////////////////
     public void unir(AFN afn){
-        Estado nuevoIni= new Estado(true, false, null);
+        Estado nuevoIni= new Estado(true, false, 0);
         Estado nuevoFin= new Estado(false, true, ClaseLexica.obtToken(claseLexica));
         
         //Estados del AFN this
@@ -99,7 +94,7 @@ public class AFN {
     }
     
     public void cTransitiva(){
-        Estado nuevoIni= new Estado(true, false, null);
+        Estado nuevoIni= new Estado(true, false, 0);
         Estado nuevoFin= new Estado(false, true, ClaseLexica.obtToken(claseLexica));
         
         nuevoIni.agregarTransicion(estadoInicial());
@@ -116,7 +111,7 @@ public class AFN {
     }
     
     public void cEstrella(){
-        Estado nuevoIni= new Estado(true, false, null);
+        Estado nuevoIni= new Estado(true, false, 0);
         Estado nuevoFin= new Estado(false, true, ClaseLexica.obtToken(claseLexica));
         
         nuevoIni.agregarTransicion(estadoInicial());
@@ -135,7 +130,7 @@ public class AFN {
     }
     
     public void opcional(){
-        Estado nuevoIni= new Estado(true, false, null);
+        Estado nuevoIni= new Estado(true, false, 0);
         Estado nuevoFin= new Estado(false, true, ClaseLexica.obtToken(claseLexica));
         
         nuevoIni.agregarTransicion(estadoInicial());
@@ -156,7 +151,7 @@ public class AFN {
     
     public static AFN unificarInicial(ArrayList<AFN> afns){
         AFN defAfn= new AFN("AFNTOTAL");
-        Estado inicialTotal= new Estado(true, false, null);
+        Estado inicialTotal= new Estado(true, false, 0);
         int nuevosId=1;
         
         inicialTotal.nuevoId(0);

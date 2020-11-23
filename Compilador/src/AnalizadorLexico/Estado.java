@@ -10,17 +10,11 @@ public class Estado {
     private HashSet<Transicion> transiciones;
     private int token;
         
-    public Estado(boolean ini, boolean acept, Integer token){
+    public Estado(boolean ini, boolean acept, int token){
         transiciones= new HashSet();
         inicial=ini;
         aceptacion= acept;
-        if(acept)
-            if(token==null)
-                this.token=0;
-            else
-                this.token=token;
-        else
-            this.token=0;
+        this.token=token;
         id= idCuenta;
         idCuenta+=1;
     }
@@ -41,6 +35,14 @@ public class Estado {
     
     public int obtToken(){
         return token;
+    }
+    
+//    public void defToken(int token){
+//        this.token= token;
+//    }
+    
+    public int id(){
+        return id;
     }
     
     public String obtNombre(){
@@ -87,11 +89,11 @@ public class Estado {
         sb.append("S").append(id).append(": ");
         
         if(aceptacion)
-            sb.append("[ACEPTACIÓN], ");
+            sb.append("[ACEPTACIÓN] ");
         if(inicial)
-            sb.append("[INICIAL], ");
+            sb.append("[INICIAL] ");
         if(token>0)
-            sb.append("[token ").append(token).append("], ");
+            sb.append("[token ").append(token).append("] ");
         
         return sb.toString();
     }
