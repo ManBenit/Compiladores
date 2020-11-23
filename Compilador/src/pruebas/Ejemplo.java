@@ -92,7 +92,7 @@ public class Ejemplo {
     
     
     
-    private static void escribir(Object afn, String ruta){
+    private void escribir(Object afn, String ruta){
         try{
             FileOutputStream f= new FileOutputStream(new File(ruta));
             f.write(afn.toString().getBytes());
@@ -101,7 +101,7 @@ public class Ejemplo {
         }
     }
     
-    private static void escribirTablaEdos(int [][] estados, ArrayList<Character> alfabeto, String ruta){
+    private void escribirTablaEdos(int [][] estados, ArrayList<Character> alfabeto, String ruta){
         File f= new File(ruta);
         BufferedWriter bw;
         try{
@@ -124,7 +124,7 @@ public class Ejemplo {
         }
     }
     
-    private static String adaptarRuta(String ruta){
+    private String adaptarRuta(String ruta){
         if(System.getProperty("os.name").equals("Windows"))
             return ruta.replace("/", "\\");
         else
