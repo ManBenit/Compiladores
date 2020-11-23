@@ -80,7 +80,7 @@ public class Compilador {
         escribir(afd, adaptarRuta("../AFD.txt"));
         
         
-        imprimirTablaEdos(afd.tablaDeEstados(), afd.alfabeto());
+        //imprimirTablaEdos(afd.tablaDeEstados(), afd.alfabeto());
         
 //        //Algún operador, paréntesis o algún símbolo específico (se representa con una letra)
 //        Pattern patron= Pattern.compile("\\*|\\+|\\?|[|]|\\(|\\)|[A-Z]");

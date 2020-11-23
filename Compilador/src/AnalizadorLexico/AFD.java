@@ -1,16 +1,17 @@
 package AnalizadorLexico;
 
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
-public class AFD {
-    private HashSet<Estado> estados;
+public class AFD{
+    private LinkedList<Estado> estados;
     private ArrayList<Character> alfabeto;
     private ArrayList<int[]> tablaEstados;
     private final String nombre;
-    private int id=0;
     
     public AFD(String nombre){
         tablaEstados= new ArrayList<>();
@@ -24,121 +25,103 @@ public class AFD {
         alfabeto.add('T');
         
         
-        estados= new HashSet();
+        estados= new LinkedList<>();
         this.nombre=nombre;
     }
     
     public void convertir(AFN afn){
         LinkedList<HashSet<Estado>> conjEstados= obtConjEdos(afn);
-        Object[] arrayConjEstados= conjEstados.toArray();
+        LinkedList<HashSet<Estado>> conjEstadosAux= conjEstados;
         
-        //Iniciar tabla con todos los vlaores en -1, excepto el vector de tokens
-//        tablaEstados= new int[arrayConjEstados.length][alfabeto.size()+1+1]; //uno extra de tokens(N) y uno de inicial(0)
-//        for(int i=0; i<arrayConjEstados.length; i++)
-//            for(int j=1; j<alfabeto.size()+1; j++)
-//                tablaEstados[i][j]=-1;
         
-        //---
-        for(HashSet<Estado> he: conjEstados){
-            System.out.print("S"+conjEstados.indexOf(he)+"={");
-            for(Estado e: he)
-                System.out.print(e.id()+", ");
-            System.out.println("}");
-        }
-        //----
-             
-        int indFil=0; //Se llena de abajo a arriba para que el estado inicial quede siempre en la primera fila
-        int conjContenedor;
-        int tokenRelacionado;
-        //int[] nvosIndices= new int[conjEstados.size()]; //Arreglo cuyo tamaño es el número de conjuntos de estados menos el inicial
-        ArrayList<Integer> nvosIndices= new ArrayList<>();
-        LinkedList<Estado> edosLeidos= new LinkedList<>();
-        LinkedList<HashSet<Estado>> moverConjunto= new LinkedList(); //Mover de cada conjunto de estados (para tabla)
-//        LinkedList<Integer> edosLeidos= new LinkedList<>();
-        //for(int i=arrayConjEstados.length-1; i>=0; i--){//Recorrer cada conjunto de estados
-        for(HashSet<Estado> conjunto: conjEstados){//Recorrer cada conjunto de estados
-            //HashSet<Estado> conjunto= (HashSet<Estado>)arrayConjEstados[i];
+//        for(HashSet<Estado> conjunto: conjEstados){
+//            //System.out.print("S"+i+"= {");
+//            System.out.print("{");
+//            for(Estado e: conjunto)
+//                System.out.print(e+", ");
+//            System.out.println("}");
+//        }
+        
+        //Crear estado para cada subconjunto
+        int id=conjEstados.size()-1;
+        for(HashSet<Estado> conjunto: conjEstados){
+            boolean ini= false, acep=false;
+            //int id=0;
+            int token=0;
+            Estado nEdo;
             
-            
-            
-            //Obtener token para el vector de tokens (última columna)
-            tokenRelacionado=0; //si no hay, será 0
-            for(Estado e: conjunto)
+            for(Estado e: conjunto){
+                id= e.id();
                 if(e.esAceptacion()){
-                    tokenRelacionado=e.obtToken();
+                    acep=true;
+                    token= e.obtToken();
                     break;
                 }
-            tablaEstados.get(indFil)[alfabeto.size()+1]= tokenRelacionado;
-            
-            
-                    
-            
-            //Posición en la tabla de estados
-            HashSet<Estado> conjaux;//Para el resultado del mover.
-            tablaEstados.get(indFil)[0]=conjEstados.indexOf(conjunto);
-            for(char c: alfabeto){
-                conjaux= mover(conjunto, c); //Conjunto actual
-//                moverConjunto.add(conjaux);
-                
-                if(conjaux.size()>0){
-                    for(Estado e: conjaux){
-                        System.out.printf("[%d: %s, %c]\n", indFil, e, c);
-                        if(!edosLeidos.contains(e)){
-                            edosLeidos.add(e);
-                        }
-//                        if(!edosLeidos.contains(e.id()))
-//                            edosLeidos.add(e.id());
-                        tablaEstados.get(indFil)[alfabeto.indexOf(c)+1]= e.id(); //En este moemento se agregan los idsTemporales
-                    }
+                if(e.esInicial()){
+                    ini=true;
+                    break;
                 }
             }
             
-            indFil+=1;
+            nEdo= new Estado(ini, acep, token);
+            nEdo.nuevoId(id);
+            estados.addFirst(nEdo);
+            //id-=1;
         }
         
+        System.out.println(estados.size());
         
-        System.out.println("----------leidos");
-        for(Estado e: edosLeidos)
-            System.out.println(e+"- ");
-        System.out.println("---------------------");
+        for(Estado e: estados){
+            //System.out.print("S"+i+"= {");
+            System.out.println(e+", ");
+        }
+        System.out.println("");
         
-        //Id de los estados en cuerpo de tabla
-//        for(int i=0; i<edosLeidos.size(); i++){
-//            for(int j=1; j<alfabeto.size()+1; j++){
-//                int idDentro=tablaEstados.get(i)[j];
-//                if(idDentro>0)
-//                    if(!nvosIndices.contains(idDentro))
-//                        nvosIndices.add(idDentro);
-//            }
-//        }
+        LinkedList<HashSet<Estado>> pilaDeControl= new LinkedList<>();
+        HashSet<Estado> conjAux;
+        int i=1;
+        while(i<conjEstados.size()){
+            for(char s: alfabeto){
+                conjAux= irA(conjEstados.get(i), s);
+                if(conjAux.size()>0){
+                    if(!pilaDeControl.contains(conjAux))
+                        pilaDeControl.add(conjAux);
+                    
+                    HashSet<Estado> encontrado=null;
+                    for(HashSet<Estado> buscar: pilaDeControl){
+                        if(buscar.equals(conjAux)){
+                            encontrado=buscar;
+                            break;
+                        }
+                    }
+                    
+                    representante(conjEstados.get(i)).agregarTransicion(s, representante(conjAux));
+                }
+            }
+            
+            i+=1;
+        }
         
-        //Renombrar estados: sustituir los índices originales por los nuevos en la tabla de estados
-//        for(int i=0; i<edosLeidos.size(); i++){
-//            for(int j=1; j<alfabeto.size()+1; j++){
-//                if(tablaEstados.get(i)[j]>0)
-//                    tablaEstados.get(i)[j]=nvosIndices.indexOf(tablaEstados.get(i)[j])+1;
-//            }
-//        }
-        
-//        for(int t: nvosIndices)
-//            System.out.print(t+"_");*/
-        
-        //Id de los estados de arranque
-//        indFil=edosLeidos.size()-1;
-//        for(int j=0; j<edosLeidos.size(); j++){
-//            //tablaEstados[indFil][0]= edosLeidos.get(j).id(); //Nuevos id de estado *****
-//            tablaEstados.get(indFil)[0]= indFil;
-//            //System.out.printf("(%d, %d)", indFil, j);
-//            indFil-=1;
-//        }
-        
-        
-        
-        
-        
-        
-        
-        
+        metodo();
+    }
+    
+    private void metodo(){
+        for(Estado e : estados){ //Conjunto general
+            System.out.println(e+"*****************");
+            for(Transicion t: e.obtTransiciones())
+                System.out.println(t);
+            System.out.println("vvvvvvvvvvvvvvv");
+        }
+    }
+    
+    //Estado creado que representa un conjunto de estados
+    private Estado representante(HashSet<Estado> conjunto){
+        Estado ret=null;
+        for(Estado edoConj: conjunto)
+            for(Estado e: estados)
+                if(e.id()==edoConj.id())
+                    ret=e;
+        return ret;
     }
     
     public int[][] tablaDeEstados(){
@@ -159,7 +142,7 @@ public class AFD {
         HashSet<Estado> cEstados; //Conjuntos de estados a analizar
         LinkedList<HashSet<Estado>> S= new LinkedList(); //Pila de comprobación
         HashSet<HashSet<Estado>> utiles= new HashSet(); //Estados que servirán para el AFD
-        LinkedList<HashSet<Estado>> utilRet= new LinkedList(); //Estados utiles a regresar
+        LinkedList<HashSet<Estado>> utilRet= new LinkedList<>();
         
         //Calcular S0
         cEstados= cerraduraEpsilon(afn.estadoInicial());
@@ -168,7 +151,6 @@ public class AFD {
         
         //Análisis del resto de estados
         int i=0;
-        int iAux=1;
         while(i<S.size()){
             cEstados= S.pop();
             //*************
@@ -206,7 +188,6 @@ public class AFD {
                     //*************
                     S.add(ira);
                     utiles.add(ira);
-                    iAux+=1;
                 }
             }
             tablaEstados.add(fila);
@@ -218,8 +199,6 @@ public class AFD {
 //            System.out.println("");
             //*******
         }
-        
-        
         
         for(HashSet<Estado> hs: utiles)
             utilRet.add(hs);

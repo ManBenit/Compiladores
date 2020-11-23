@@ -1,3 +1,24 @@
 ***************** AFD Tarea autómata ***********************
-0 estados.
+11 estados.
+S0: [INICIAL] 
+S0 ----D----> S12: [ACEPTACIÓN] [token 20] 
+S0 ----E----> S27: [ACEPTACIÓN] [token 60] 
+S0 ----M----> S23: [ACEPTACIÓN] [token 40] 
+S0 ----P----> S24: [ACEPTACIÓN] [token 50] 
+S0 ----L----> S6: [ACEPTACIÓN] [token 10] 
+S0 ----T----> S27: [ACEPTACIÓN] [token 60] 
+S27 ----T----> S27: [ACEPTACIÓN] [token 60] 
+S27 ----T----> S27: [ACEPTACIÓN] [token 60] 
+S27 ----E----> S27: [ACEPTACIÓN] [token 60] 
+S27 ----E----> S27: [ACEPTACIÓN] [token 60] 
+S21 ----D----> S21: 
+S21 ----D----> S21: 
+S6 ----D----> S6: [ACEPTACIÓN] [token 10] 
+S6 ----L----> S6: [ACEPTACIÓN] [token 10] 
+S6 ----D----> S6: [ACEPTACIÓN] [token 10] 
+S6 ----D----> S6: [ACEPTACIÓN] [token 10] 
+S6 ----L----> S6: [ACEPTACIÓN] [token 10] 
+S6 ----L----> S6: [ACEPTACIÓN] [token 10] 
+S12 ----.----> S21: 
+S12 ----D----> S12: [ACEPTACIÓN] [token 20] 
 **************************************************
