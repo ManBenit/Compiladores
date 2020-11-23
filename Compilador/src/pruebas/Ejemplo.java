@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Ejemplo {
+    private AFD afd;
 
     public void verEjemplo(){
         String rutaCarga= adaptarRuta("../DescriptorClases/claslex.txt");
@@ -30,15 +31,15 @@ public class Ejemplo {
         a3.crearBasico('L');
         a3.concatenar(a1);
         elementosUnificacion.add(a3);
-        System.out.println(a3);
-        System.out.println("");
+        //System.out.println(a3);
+        //System.out.println("");
         
         AFN a4= new AFN(ClaseLexicaPrueba.obtNomClases()[1]);
         a4.crearBasico('D');
         a4.cTransitiva();
         elementosUnificacion.add(a4);
-        System.out.println(a4);
-        System.out.println("");
+        //System.out.println(a4);
+        //System.out.println("");
         
         AFN a5= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
         AFN a6= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
@@ -51,20 +52,20 @@ public class Ejemplo {
         a5.concatenar(a6);
         a5.concatenar(a7);
         elementosUnificacion.add(a5);
-        System.out.println(a5);
-        System.out.println("");
+        //System.out.println(a5);
+        //System.out.println("");
         
         AFN a8= new AFN(ClaseLexicaPrueba.obtNomClases()[3]);
         a8.crearBasico('M');
         elementosUnificacion.add(a8);
-        System.out.println(a8);
-        System.out.println("");
+        //System.out.println(a8);
+        //System.out.println("");
         
         AFN a9= new AFN(ClaseLexicaPrueba.obtNomClases()[4]);
         a9.crearBasico('P');
         elementosUnificacion.add(a9);
-        System.out.println(a9);
-        System.out.println("");
+        //System.out.println(a9);
+        //System.out.println("");
         
         AFN a10= new AFN(ClaseLexicaPrueba.obtNomClases()[5]);
         AFN a11= new AFN(ClaseLexicaPrueba.obtNomClases()[5]);
@@ -73,20 +74,24 @@ public class Ejemplo {
         a10.unir(a11);
         a10.cTransitiva();
         elementosUnificacion.add(a10);
-        System.out.println(a10);
-        System.out.println("");
+        //System.out.println(a10);
+        //System.out.println("");
         
         
         AFN total= AFN.unificarInicial(elementosUnificacion);
         escribir(total, adaptarRuta("../AFN.txt"));
         
-        AFD afd= new AFD("Tarea autómata");
+        afd= new AFD("Tarea autómata");
         afd.convertir(total);
         escribir(afd, adaptarRuta("../AFD.txt"));
         
         
         escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
         
+    }
+    
+    public AFD afd(){
+        return afd;
     }
     
     
@@ -97,7 +102,7 @@ public class Ejemplo {
             FileOutputStream f= new FileOutputStream(new File(ruta));
             f.write(afn.toString().getBytes());
         }catch(IOException ex){
-            System.out.println("Fallo al escribir autómata\n"+ex);
+            //System.out.println("Fallo al escribir autómata\n"+ex);
         }
     }
     
@@ -120,7 +125,7 @@ public class Ejemplo {
             bw.flush();
             bw.close();
         }catch(IOException ex){
-            System.out.println("Fallo al escribir tabla\n"+ex);
+            //System.out.println("Fallo al escribir tabla\n"+ex);
         }
     }
     

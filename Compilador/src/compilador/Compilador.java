@@ -1,5 +1,6 @@
 package compilador;
 
+import AnalizadorLexico.AFD;
 import AnalizadorLexico.ClaseLexica;
 import pruebas.Ejemplo;
 
@@ -9,7 +10,11 @@ public class Compilador {
     public static void main(String[] args) {
         //Pruebas con la tarea realizada casi al inicio del curso
         Ejemplo p= new Ejemplo();
-        //p.verEjemplo();
+        p.verEjemplo();
+        
+        AFD afd= p.afd();
+        String cad= "asumadre h";
+        afd.validarCadena(cad);
         /////////////////////////////////////////////////////////
         
         //Carga automática de alfabeto

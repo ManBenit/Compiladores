@@ -26,6 +26,45 @@ public class AFD{
         this.nombre=nombre;
     }
     
+    public boolean validarCadena(String cadena){
+        StringBuilder sb= new StringBuilder("");
+        char[] cad= cadena.toCharArray();
+        int estadoActual=0; //Recorre las filas
+        boolean previoAceptado= false;
+        char recordado;
+        
+        //Si el caracter actual es el fin de la cadena
+        
+        //Analizar cada caracter
+        int inicio=0, fin=0, indiceCadena=0;
+        while(indiceCadena<cad.length){
+            int posible= tablaEstados[estadoActual][alfabeto.indexOf(cad[indiceCadena])];
+            if(posible>-1){ //Si hay transicion de estadoActual con c a algún estado
+                estadoActual=posible;
+                
+                int token= tablaEstados[estadoActual][alfabeto.size()+1];
+                if(token>0){ //Si es un estado de aceptación
+                    recordado=cad[indiceCadena];
+                    sb.append(cad[indiceCadena]);
+                    previoAceptado=true;
+                    indiceCadena+=1;
+                }
+            }
+            else{
+                if(!previoAceptado){ //Si no ha habido aceptación, hay error
+                    System.out.println("Previo aceptado"+sb.toString());
+                    estadoActual=0;
+                }
+                else{
+                    
+                }
+            }
+        }
+        
+        
+        return true;
+    }
+    
     public void convertir(AFN afn){
         conjEstados= obtConjEdos(afn);
         
@@ -66,8 +105,9 @@ public class AFD{
             }
             i+=1;
         }
-        //renombrarEstados //Método para que sean números consecutivos
+        
         crearTabla();
+        //renombrarEstadosEnTabla(); //Método para que sean números consecutivos en la tabla
     }
     
     //Estado creado que representa un conjunto de estados
@@ -108,6 +148,18 @@ public class AFD{
             
             indice+=1;
         }
+    }
+    
+    //Este método renombra lso estados ÚNICAMENTE EN LA TABLA DE ESTADOS para
+    //verlos como números consecutivos
+    private void renombrarEstadosEnTabla(){
+        ArrayList<Integer> idEdos= new ArrayList<>();
+        for(Estado e: estados)
+            idEdos.add(e.id());
+        for(int i=0; i<tablaEstados.length; i++)
+            for(int j=0; j<tablaEstados[i].length-1; j++)
+                if(tablaEstados[i][j]>-1)
+                    tablaEstados[i][j]=idEdos.indexOf(tablaEstados[i][j]);
     }
     
     public int[][] tablaDeEstados(){
