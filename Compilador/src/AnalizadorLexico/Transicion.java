@@ -9,6 +9,16 @@ public class Transicion{
         destino=e;
     }
     
+    //Modelo de un rango de caracteres
+    public Transicion(char ini, char fin, Estado e){
+        //El ascii de fin debe ser mayor al de ini
+        if( (int)ini < (int)fin){
+            
+        }
+        else
+            System.out.printf("ERROR AL CREAR TRANSICIÓN: [%c - %c]", ini, fin);
+    }
+    
     //Modelo de la transición épsilon
     public Transicion(Estado e){
         simbolo= '\0';

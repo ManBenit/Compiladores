@@ -13,7 +13,7 @@ public class Compilador {
         p.verEjemplo();
         
         AFD afd= p.afd();
-        String cad= "asumadre h";
+        String cad= "D.D.";
         afd.validarCadena(cad);
         /////////////////////////////////////////////////////////
         

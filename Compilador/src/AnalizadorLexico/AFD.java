@@ -27,11 +27,15 @@ public class AFD{
     }
     
     public boolean validarCadena(String cadena){
+        ArrayList<Integer> idEdos= new ArrayList<>();
+        for(Estado e: estados)
+            idEdos.add(e.id());
         StringBuilder sb= new StringBuilder("");
         char[] cad= cadena.toCharArray();
         int estadoActual=0; //Recorre las filas
         boolean previoAceptado= false;
-        char recordado;
+        int posRecordada=0;
+        int token=0;
         
         //Si el caracter actual es el fin de la cadena
         
@@ -40,22 +44,32 @@ public class AFD{
         while(indiceCadena<cad.length){
             int posible= tablaEstados[estadoActual][alfabeto.indexOf(cad[indiceCadena])];
             if(posible>-1){ //Si hay transicion de estadoActual con c a algún estado
-                estadoActual=posible;
+                estadoActual=idEdos.indexOf(posible);
                 
-                int token= tablaEstados[estadoActual][alfabeto.size()+1];
+                System.out.println("Posible: "+posible);
+                token= tablaEstados[estadoActual][alfabeto.size()+1];
                 if(token>0){ //Si es un estado de aceptación
-                    recordado=cad[indiceCadena];
-                    sb.append(cad[indiceCadena]);
+                    posRecordada=indiceCadena;
+                    
                     previoAceptado=true;
+                    
+                }
+                sb.append(cad[indiceCadena]);
+                indiceCadena+=1; //Se apsa al siguiente caracter
+            }
+            else{ //No hubo transición
+                if(!previoAceptado){ //Si no ha habido aceptación, hay error
+                    System.out.printf("Rechazado %c, posición %d\n", cad[indiceCadena], indiceCadena);
+                    sb.delete(0, sb.length());
+                    estadoActual=0;
                     indiceCadena+=1;
                 }
-            }
-            else{
-                if(!previoAceptado){ //Si no ha habido aceptación, hay error
-                    System.out.println("Previo aceptado"+sb.toString());
-                    estadoActual=0;
-                }
                 else{
+                    //Regresar al último índice con aceptación
+                    //indiceCadena=posRecordada;
+                    System.out.printf("Último lex aceptado: %s, token %d\n", sb.toString(), token);
+                    sb.delete(0, sb.length());
+                    previoAceptado=false;
                     
                 }
             }
