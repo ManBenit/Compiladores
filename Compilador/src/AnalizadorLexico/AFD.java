@@ -27,56 +27,88 @@ public class AFD{
     }
     
     public boolean validarCadena(String cadena){
+        boolean valida=true;
         ArrayList<Integer> idEdos= new ArrayList<>();
         for(Estado e: estados)
             idEdos.add(e.id());
-        StringBuilder sb= new StringBuilder("");
+        StringBuilder sb= new StringBuilder(""); //Evita el uso de índices de fin e inicio
         char[] cad= cadena.toCharArray();
-        int estadoActual=0; //Recorre las filas
+        int indEstadoActual=0; //Recorre las filas
         boolean previoAceptado= false;
-        int posRecordada=0;
+        int contRechazo=0;//Para evitar bucles infinitos en caso de error
+        
         int token=0;
+        String lexema= "";
         
         //Si el caracter actual es el fin de la cadena
         
         //Analizar cada caracter
         int inicio=0, fin=0, indiceCadena=0;
         while(indiceCadena<cad.length){
-            int posible= tablaEstados[estadoActual][alfabeto.indexOf(cad[indiceCadena])];
+            
+            //Se aumenta 1 la posición de la culumna debido a que la columna 0 es la de los estados de arranque
+            int posible= tablaEstados[indEstadoActual][alfabeto.indexOf(cad[indiceCadena])+1]; 
             if(posible>-1){ //Si hay transicion de estadoActual con c a algún estado
-                estadoActual=idEdos.indexOf(posible);
+                indEstadoActual=idEdos.indexOf(posible);
                 
-                System.out.println("Posible: "+posible);
-                token= tablaEstados[estadoActual][alfabeto.size()+1];
-                if(token>0){ //Si es un estado de aceptación
-                    posRecordada=indiceCadena;
-                    
+                int auxToken= tablaEstados[indEstadoActual][alfabeto.size()+1]; //tabla[indiceAct][ultima columna]
+                //System.out.println("token: "+token);
+                if(auxToken>0){ //Si es un estado de aceptación
+                    //posRecordada=indiceCadena;
+                    token=auxToken;
                     previoAceptado=true;
-                    
+                    sb.append(cad[indiceCadena]);
                 }
-                sb.append(cad[indiceCadena]);
-                indiceCadena+=1; //Se apsa al siguiente caracter
+                else{
+                    if(previoAceptado){
+                        sb.append(cad[indiceCadena]);
+//                        recToken=token;
+                        
+                        previoAceptado=false;
+                    }
+                }
+                
+                indiceCadena+=1; //Se pasa al siguiente caracter
             }
             else{ //No hubo transición
                 if(!previoAceptado){ //Si no ha habido aceptación, hay error
-                    System.out.printf("Rechazado %c, posición %d\n", cad[indiceCadena], indiceCadena);
+//                    System.out.printf("Rechazado %c, posición %d\n", cad[indiceCadena], indiceCadena);
                     sb.delete(0, sb.length());
-                    estadoActual=0;
-                    indiceCadena+=1;
+                    indEstadoActual=0;
+//                    indiceCadena=0;
+                    contRechazo+=1;
                 }
                 else{
                     //Regresar al último índice con aceptación
                     //indiceCadena=posRecordada;
-                    System.out.printf("Último lex aceptado: %s, token %d\n", sb.toString(), token);
+                    lexema= sb.toString();
+                    System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
                     sb.delete(0, sb.length());
                     previoAceptado=false;
-                    
                 }
             }
+            
+            //En el peor caso, todos los símbolos de la cadena representan un lexema de un solo caracter,
+            //por lo que el número de rechazos en el análisis es menor a la longitud de la cadena,
+            //por lo tanto, en cualquier otro caso, el número es siempre menor, en caso contrario,
+            //se está empezando un ciclo infinito, ahí la cadena se invalida.
+            //(Esto es sobretodo para controlar el punto, poque dos puntos fuera de lugar hacen cciclo infinito)
+            //(Esta condición debe desaparecer, ya que no debe ser necesaria)
+            if(contRechazo>=cadena.length()){
+                valida=false;
+                break;
+            }
+                
+            
+            
         }
         
+        //Cuando se acaba la cadena, ver el último lexema
+        if( !(lexema=sb.toString()).equals("") && valida)
+            System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
         
-        return true;
+        
+        return valida;
     }
     
     public void convertir(AFN afn){

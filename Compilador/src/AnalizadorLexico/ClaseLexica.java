@@ -32,17 +32,18 @@ public class ClaseLexica {
             System.err.println(ex.getMessage());
         }
         
-        int i=0;
-        for(ArrayList al: diccionario){
-            for(Object obj: al){
-                if(i<2)
-                    System.out.print((String)obj+", ");
-                else
-                    System.out.print(Integer.parseInt((String)obj)+", ");
-                i+=1;
-            }
-            System.out.println("");
-            i=0;
-        }
+//        System.out.println("\nClase léxica");
+//        int i=0;
+//        for(ArrayList al: diccionario){
+//            for(Object obj: al){
+//                if(i<2)
+//                    System.out.print((String)obj+", ");
+//                else
+//                    System.out.print(Integer.parseInt((String)obj)+", ");
+//                i+=1;
+//            }
+//            System.out.println("");
+//            i=0;
+//        }
     }
 }

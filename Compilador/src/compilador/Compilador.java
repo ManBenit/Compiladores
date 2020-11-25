@@ -13,8 +13,12 @@ public class Compilador {
         p.verEjemplo();
         
         AFD afd= p.afd();
-        String cad= "D.D.";
-        afd.validarCadena(cad);
+//        String cad= "D.D.";
+        String cad= "DD.DDTTLLDEMEEP";//DD.DDTTLLDEMEEP
+        if(afd.validarCadena(cad))
+            System.out.println("CADENA VÁLIDA");
+        else
+            System.out.println("CADENA INVÁLIDA");
         /////////////////////////////////////////////////////////
         
         //Carga automática de alfabeto
