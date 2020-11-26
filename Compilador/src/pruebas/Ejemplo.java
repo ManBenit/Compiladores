@@ -5,6 +5,7 @@ package pruebas;
 
 import AnalizadorLexico.AFD;
 import AnalizadorLexico.AFN;
+import AnalizadorLexico.ClaseLexica;
 import AnalizadorLexico.ClaseLexicaPrueba;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -90,6 +91,28 @@ public class Ejemplo {
         
     }
     
+    public void ejemploRango(){
+        String rutaCarga= adaptarRuta("../gramatest.txt");
+        ClaseLexica.cargarClasesLexicas(rutaCarga);
+        ArrayList<Character> alfabeto= ClaseLexica.ALFABETO;
+        for(char a: alfabeto)
+            System.out.print(a+", ");
+        System.out.println("");
+//        Object[] clases= ClaseLexica.nombreClases();
+//        AFN afn= new AFN((String)clases[0]);
+//        AFN afn2= new AFN((String)clases[1]);
+//        afn.crearBasico('2');
+//        afn2.crearBasico('p', 's');
+//        afn.cTransitiva();
+//        afn.unir(afn2);
+//        escribir(afn, adaptarRuta("../AFN.txt"));
+//        
+//        afd= new AFD("rangos");
+//        afd.convertir(afn);
+//        escribir(afd, adaptarRuta("../AFD.txt"));
+//        escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
+    }
+    
     public AFD afd(){
         return afd;
     }
@@ -102,7 +125,7 @@ public class Ejemplo {
             FileOutputStream f= new FileOutputStream(new File(ruta));
             f.write(afn.toString().getBytes());
         }catch(IOException ex){
-            //System.out.println("Fallo al escribir autómata\n"+ex);
+            System.out.println("Fallo al escribir autómata\n"+ex);
         }
     }
     

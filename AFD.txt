@@ -1,24 +1,9 @@
-***************** AFD Tarea autómata ***********************
-11 estados.
+***************** AFD rangos ***********************
+3 estados.
 S0: [INICIAL] 
-S0 ----D----> S28: [ACEPTACIÓN] [token 20] 
-S0 ----E----> S65: [ACEPTACIÓN] [token 60] 
-S0 ----M----> S44: [ACEPTACIÓN] [token 40] 
-S0 ----P----> S60: [ACEPTACIÓN] [token 50] 
-S0 ----L----> S12: [ACEPTACIÓN] [token 10] 
-S0 ----T----> S63: [ACEPTACIÓN] [token 60] 
-S11 ----D----> S11: [ACEPTACIÓN] [token 10] 
-S11 ----L----> S17: [ACEPTACIÓN] [token 10] 
-S12 ----D----> S11: [ACEPTACIÓN] [token 10] 
-S12 ----L----> S17: [ACEPTACIÓN] [token 10] 
-S63 ----T----> S63: [ACEPTACIÓN] [token 60] 
-S63 ----E----> S65: [ACEPTACIÓN] [token 60] 
-S65 ----T----> S63: [ACEPTACIÓN] [token 60] 
-S65 ----E----> S65: [ACEPTACIÓN] [token 60] 
-S6 ----D----> S39: [ACEPTACIÓN] [token 30] 
-S17 ----L----> S17: [ACEPTACIÓN] [token 10] 
-S17 ----D----> S11: [ACEPTACIÓN] [token 10] 
-S28 ----.----> S6: 
-S28 ----D----> S28: [ACEPTACIÓN] [token 20] 
-S39 ----D----> S39: [ACEPTACIÓN] [token 30] 
+S0 ----p----> S2: [ACEPTACIÓN] [token 1] 
+S0 ----r----> S2: [ACEPTACIÓN] [token 1] 
+S0 ----2----> S3: [ACEPTACIÓN] [token 1] 
+S0 ----q----> S2: [ACEPTACIÓN] [token 1] 
+S0 ----s----> S2: [ACEPTACIÓN] [token 1] 
 **************************************************

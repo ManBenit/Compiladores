@@ -12,16 +12,7 @@ public class AFD{
     private LinkedList<HashSet<Estado>> conjEstados;
     
     public AFD(String nombre){
-        alfabeto= new ArrayList();
-        alfabeto.add('L');
-        alfabeto.add('D');
-        alfabeto.add('.');
-        alfabeto.add('M');
-        alfabeto.add('P');
-        alfabeto.add('E');
-        alfabeto.add('T');
-        
-        
+        alfabeto= ClaseLexica.ALFABETO;
         estados= new LinkedList<>();
         this.nombre=nombre;
     }
@@ -123,7 +114,7 @@ public class AFD{
             Estado nEdo;
             
             for(Estado e: conjunto){
-                id= e.token()+idDisc; //ID: token + el conjunto que repreesenta (mismo índice que idDisc)
+                id= e.token()+idDisc; //ID: token + el conjunto que representa
                 if(e.esAceptacion()){
                     acep=true;
                     token= e.token();
@@ -189,8 +180,12 @@ public class AFD{
         for(Estado e: estados){
             tablaEstados[indice][0]= e.id();
             tablaEstados[indice][columnas-1]= e.token();
-            for(Transicion t: e.obtTransiciones())
-                tablaEstados[indice][alfabeto.indexOf(t.simbolo())+1]= t.destino().id();
+            for(Transicion t: e.obtTransiciones()){
+                for(int i=t.simInicial(); i<=t.simFinal(); i++){
+                    tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();
+                }
+            }
+                
             
             indice+=1;
         }
@@ -262,7 +257,7 @@ public class AFD{
             
             //Analizar si p tiene transiciones épsilon
             for(Transicion t: p.obtTransiciones())
-                if(t.simbolo()=='\0')
+                if(t.simFinal()=='\0') //Da igual comparar inicial o final porque se inició con el mismo (\0)
                     S.push(t.destino());    
         }
         
@@ -281,9 +276,10 @@ public class AFD{
     private HashSet<Estado> mover(Estado e, char s){
         HashSet<Estado> R= new HashSet();
         for(Transicion t: e.obtTransiciones())
-            if(t.simbolo()==s)
+            if((int)s>=(int)t.simInicial() && (int)s<=(int)t.simFinal()) //Si se encuentra dentro del rango
                 R.add(t.destino());
         
+                
         return R;
     }
     

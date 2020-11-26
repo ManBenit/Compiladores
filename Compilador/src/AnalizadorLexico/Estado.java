@@ -23,6 +23,10 @@ public class Estado {
         this.transiciones.add(new Transicion(c, destino));
     }
     
+    public void agregarTransicion(char c1, char c2, Estado destino){
+        this.transiciones.add(new Transicion(c1, c2, destino));
+    }
+    
     //Modelado de nueva transición épsilon
     public void agregarTransicion(Estado destino){
         this.transiciones.add(new Transicion('\0', destino));
