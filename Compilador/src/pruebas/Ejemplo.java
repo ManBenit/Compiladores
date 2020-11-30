@@ -94,23 +94,77 @@ public class Ejemplo {
     public void ejemploRango(){
         String rutaCarga= adaptarRuta("../gramatest.txt");
         ClaseLexica.cargarClasesLexicas(rutaCarga);
-        ArrayList<Character> alfabeto= ClaseLexica.ALFABETO;
-        for(char a: alfabeto)
-            System.out.print(a+", ");
+        ArrayList<AFN> elementosUnificacion= new ArrayList();
+        for(Object s: ClaseLexica.nombreClases())
+            System.out.print((String)s+", ");
         System.out.println("");
-//        Object[] clases= ClaseLexica.nombreClases();
-//        AFN afn= new AFN((String)clases[0]);
-//        AFN afn2= new AFN((String)clases[1]);
-//        afn.crearBasico('2');
-//        afn2.crearBasico('p', 's');
-//        afn.cTransitiva();
-//        afn.unir(afn2);
-//        escribir(afn, adaptarRuta("../AFN.txt"));
-//        
-//        afd= new AFD("rangos");
-//        afd.convertir(afn);
-//        escribir(afd, adaptarRuta("../AFD.txt"));
-//        escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
+
+        AFN a1= new AFN((String)ClaseLexica.nombreClases()[2]);
+        AFN a2= new AFN((String)ClaseLexica.nombreClases()[2]);
+        AFN a3= new AFN((String)ClaseLexica.nombreClases()[2]);
+        a1.crearBasico('A', 'Z');
+        a2.crearBasico('0', '9');
+        a1.unir(a2);
+        a1.cEstrella();
+        a3.crearBasico('A', 'Z');
+        a3.concatenar(a1);
+        elementosUnificacion.add(a3);
+        System.out.println(a3);
+        System.out.println("");
+        
+        AFN a4= new AFN((String)ClaseLexica.nombreClases()[4]);
+        a4.crearBasico('0', '9');
+        a4.cTransitiva();
+        elementosUnificacion.add(a4);
+        System.out.println(a4);
+        System.out.println("");
+        
+        AFN a5= new AFN((String)ClaseLexica.nombreClases()[0]);
+        AFN a6= new AFN((String)ClaseLexica.nombreClases()[0]);
+        AFN a7= new AFN((String)ClaseLexica.nombreClases()[0]);
+        a5.crearBasico('0', '9');
+        a6.crearBasico('.');
+        a7.crearBasico('0', '9');
+        a5.cTransitiva();
+        a7.cTransitiva();
+        a5.concatenar(a6);
+        a5.concatenar(a7);
+        elementosUnificacion.add(a5);
+        System.out.println(a5);
+        System.out.println("");
+        
+        AFN a8= new AFN((String)ClaseLexica.nombreClases()[5]);
+        a8.crearBasico('+');
+        elementosUnificacion.add(a8);
+        System.out.println(a8);
+        System.out.println("");
+        
+        AFN a9= new AFN((String)ClaseLexica.nombreClases()[1]);
+        a9.crearBasico('*');
+        elementosUnificacion.add(a9);
+        System.out.println(a9);
+        System.out.println("");
+        
+        AFN a10= new AFN((String)ClaseLexica.nombreClases()[3]);
+        AFN a11= new AFN((String)ClaseLexica.nombreClases()[3]);
+        a10.crearBasico(' ');
+        a11.crearBasico((char)9);
+        a10.unir(a11);
+        a10.cTransitiva();
+        elementosUnificacion.add(a10);
+        System.out.println(a10);
+        System.out.println("");
+        
+        
+        AFN total= AFN.unificarInicial(elementosUnificacion);
+        escribir(total, adaptarRuta("../AFN.txt"));
+        
+        afd= new AFD("Tarea autómata");
+        afd.convertir(total);
+        escribir(afd, adaptarRuta("../AFD.txt"));
+        
+        
+        escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
     }
     
     public AFD afd(){

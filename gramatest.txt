@@ -1,7 +1,6 @@
-IDENT	L(L|D)*	10
-INT	D+	20
-FLOAT	D+.D+	30
-MAS	M	40
-PROD	P	50
-TAB	(E|T)+	60
-FLOAT2	[0-9]+.[0.9]+	70
+IDENTsep[A-Z]([A-Z]|[0-9])*sep10
+INTsep[0-9]+sep20
+FLOATsep[0-9]+.[0-9]+sep30
+MASsep\+sep40
+PRODsep\*sep50
+TABsep(\ |\	)+sep60

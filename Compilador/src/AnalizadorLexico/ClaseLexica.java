@@ -18,7 +18,7 @@ public class ClaseLexica {
             
             String str="";
             while((str= br.readLine()) != null){
-                String[] div= str.split(String.valueOf((char)9)); //Separar con tabulador
+                String[] div= str.split("sep"); //Separar con 
                 diccionario.put(div[0], new String[]{div[2], div[1]});
             }
                 
