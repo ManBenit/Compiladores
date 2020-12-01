@@ -94,6 +94,9 @@ public class Ejemplo {
     public void ejemploRango(){
         String rutaCarga= adaptarRuta("../gramatest.txt");
         ClaseLexica.cargarClasesLexicas(rutaCarga);
+        for(char c: ClaseLexica.ALFABETO)
+            System.out.print(c+", ");
+        System.out.println("");
         ArrayList<AFN> elementosUnificacion= new ArrayList();
         for(Object s: ClaseLexica.nombreClases())
             System.out.print((String)s+", ");
@@ -161,10 +164,10 @@ public class Ejemplo {
         
         afd= new AFD("Tarea autómata");
         afd.convertir(total);
-        escribir(afd, adaptarRuta("../AFD.txt"));
+//        escribir(afd, adaptarRuta("../AFD.txt"));
         
         
-        escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
+        //escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
     }
     
     public AFD afd(){

@@ -14,6 +14,7 @@ public class AFD{
     public AFD(String nombre){
         alfabeto= ClaseLexica.ALFABETO;
         estados= new LinkedList<>();
+//        conjEstados= new LinkedList<>();
         this.nombre=nombre;
     }
     
@@ -36,7 +37,6 @@ public class AFD{
         //Analizar cada caracter
         int inicio=0, fin=0, indiceCadena=0;
         while(indiceCadena<cad.length){
-            
             //Se aumenta 1 la posición de la culumna debido a que la columna 0 es la de los estados de arranque
             int posible= tablaEstados[indEstadoActual][alfabeto.indexOf(cad[indiceCadena])+1]; 
             if(posible>-1){ //Si hay transicion de estadoActual con c a algún estado
@@ -104,7 +104,7 @@ public class AFD{
     
     public void convertir(AFN afn){
         conjEstados= obtConjEdos(afn);
-        
+         System.out.println("Aquí");
         //Crear estado para cada subconjunto
         int idDisc=conjEstados.size()-1; //Discriminante del ID
         int id=0;
@@ -182,7 +182,7 @@ public class AFD{
             tablaEstados[indice][columnas-1]= e.token();
             for(Transicion t: e.obtTransiciones()){
                 for(int i=t.simInicial(); i<=t.simFinal(); i++){
-                    tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();
+//                    tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();//******problemou
                 }
             }
                 
@@ -219,23 +219,53 @@ public class AFD{
         
         //Calcular S0
         cEstados= cerraduraEpsilon(afn.estadoInicial());
+        for(Estado e: cEstados)
+            System.out.print(e+", ");
+        System.out.println("");
         S.add(cEstados);
         utiles.add(cEstados);
-        
+        System.out.println("Alfa "+alfabeto.size());
         //Análisis del resto de estados
-        int i=0;
+        int i=0, cont=0;
         while(i<S.size()){
             cEstados= S.pop();
             for(char s: alfabeto){
                 HashSet<Estado> ira= irA(cEstados, s);
-                if(ira.size()>0){
-                    S.add(ira);
+//                System.out.println("---"+s+"---");
+//                for(Estado e: ira)
+//                    System.out.print(e+", ");
+//                System.out.println("\n------");
+                if(ira.size()>0){  
+//                    System.out.println("--------util-------");
+//                        for(Estado ee: ira)
+//                            System.out.print(ee+", ");
+//                        System.out.println("\n-------------^");
+                    if(!S.contains(ira)){
+                        cont++;   
+                        S.add(ira);
+                        
+                        
+                    }
                     utiles.add(ira);
                 }
             }
             i+=1;
+//            for(HashSet<Estado> e: S){
+//                for(Estado ee: e)
+//                    System.out.print(ee+", ");
+//                System.out.println("");
+//            }
+            
+//            if(i==1)
+//                break;
+            //System.out.println("sdfdsfsdf");
         }
-        
+        System.out.println("Len: "+utiles.size()+" cont: "+cont);
+        for(HashSet<Estado> e: utiles){
+            for(Estado ee: e)
+                System.out.print(ee+", ");
+            System.out.println("");
+        }
         //Meter conjunto a lista
         for(HashSet<Estado> hs: utiles)
             utilRet.add(hs);
