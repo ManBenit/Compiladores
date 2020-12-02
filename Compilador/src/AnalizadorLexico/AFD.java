@@ -182,7 +182,7 @@ public class AFD{
             tablaEstados[indice][columnas-1]= e.token();
             for(Transicion t: e.obtTransiciones()){
                 for(int i=t.simInicial(); i<=t.simFinal(); i++){
-//                    tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();//******problemou
+                    tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();//******problemou
                 }
             }
                 
@@ -226,6 +226,7 @@ public class AFD{
         utiles.add(cEstados);
         System.out.println("Alfa "+alfabeto.size());
         //Análisis del resto de estados
+        HashSet<Estado> auxIra= null;
         int i=0, cont=0;
         while(i<S.size()){
             cEstados= S.pop();
@@ -236,17 +237,26 @@ public class AFD{
 //                    System.out.print(e+", ");
 //                System.out.println("\n------");
                 if(ira.size()>0){  
+                    
 //                    System.out.println("--------util-------");
-//                        for(Estado ee: ira)
-//                            System.out.print(ee+", ");
-//                        System.out.println("\n-------------^");
-                    if(!S.contains(ira)){
+//                    for(Estado ee: ira)
+//                        System.out.print(ee+", ");
+//                    System.out.println("\n-------------^");
+                    if(!S.isEmpty()){
+                        if(!S.getLast().equals(ira)){
+
+                            cont++;   
+                            S.add(ira);
+                            utiles.add(ira);
+
+                        }
+                    }
+                    else{
                         cont++;   
                         S.add(ira);
-                        
-                        
+                        utiles.add(ira);
                     }
-                    utiles.add(ira);
+                    
                 }
             }
             i+=1;

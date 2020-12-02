@@ -22,7 +22,7 @@ public class Compilador {
         p.ejemploRango();
         
 //        
-        AFD afd= p.afd();
+//        AFD afd= p.afd();
 //        String cad= "D.D.";
         //String cad= "DD.DDTTLLDEMEEP";//DD.DDTTLLDEMEEP
 //        String cad= "222pq";//2+ | [p-s]

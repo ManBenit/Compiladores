@@ -1,0 +1,6 @@
+IDENTsepL(L|D)*sep10
+INTsepD+sep20
+FLOATsepD+.D+sep30
+MASsepMsep40
+PRODsepPsep50
+TABsep(E|T)+sep60
