@@ -1,11 +1,16 @@
 package AnalizadorLexico;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class AFD{
     private LinkedList<Estado> estados;
+    //private Map<String, Integer> yyList;
+    private LinkedList<Integer> lexList;
+    private LinkedList<String> texList;
     private ArrayList<Character> alfabeto;
     private int[][] tablaEstados;
     private final String nombre;
@@ -14,6 +19,9 @@ public class AFD{
     public AFD(String nombre){
         alfabeto= ClaseLexica.ALFABETO;
         estados= new LinkedList<>();
+        //yyList= new HashMap();
+        lexList= new LinkedList<>();
+        texList= new LinkedList<>();
 //        conjEstados= new LinkedList<>();
         this.nombre=nombre;
     }
@@ -73,7 +81,10 @@ public class AFD{
                     //Regresar al último índice con aceptación
                     //indiceCadena=posRecordada;
                     lexema= sb.toString();
-                    System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
+                    //System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
+                    //yyList.put(lexema, token);
+                    texList.push(lexema);
+                    lexList.push(token);
                     sb.delete(0, sb.length());
                     previoAceptado=false;
                 }
@@ -95,8 +106,11 @@ public class AFD{
         }
         
         //Cuando se acaba la cadena, ver el último lexema
-        if( !(lexema=sb.toString()).equals("") && valida)
-            System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
+        if( !(lexema=sb.toString()).equals("") && valida){
+            //System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
+            texList.push(lexema);
+            lexList.push(token);
+        }
         
         
         return valida;
@@ -104,7 +118,7 @@ public class AFD{
     
     public void convertir(AFN afn){
         conjEstados= obtConjEdos(afn);
-         System.out.println("Aquí");
+        //System.out.println("Aquí");
         //Crear estado para cada subconjunto
         int idDisc=conjEstados.size()-1; //Discriminante del ID
         int id=0;
@@ -219,12 +233,12 @@ public class AFD{
         
         //Calcular S0
         cEstados= cerraduraEpsilon(afn.estadoInicial());
-        for(Estado e: cEstados)
+        /*for(Estado e: cEstados)
             System.out.print(e+", ");
-        System.out.println("");
+        System.out.println("");*/
         S.add(cEstados);
         utiles.add(cEstados);
-        System.out.println("Alfa "+alfabeto.size());
+        //System.out.println("Alfa "+alfabeto.size());
         //Análisis del resto de estados
         HashSet<Estado> auxIra= null;
         int i=0, cont=0;
@@ -270,12 +284,12 @@ public class AFD{
 //                break;
             //System.out.println("sdfdsfsdf");
         }
-        System.out.println("Len: "+utiles.size()+" cont: "+cont);
+        /*System.out.println("Len: "+utiles.size()+" cont: "+cont);
         for(HashSet<Estado> e: utiles){
             for(Estado ee: e)
                 System.out.print(ee+", ");
             System.out.println("");
-        }
+        }*/
         //Meter conjunto a lista
         for(HashSet<Estado> hs: utiles)
             utilRet.add(hs);
@@ -365,4 +379,18 @@ public class AFD{
         
         return sb.toString();
     }
+    
+    public int yylex(){
+        return lexList.pop();
+    }
+    
+    public String yytex(){
+        return texList.pop();
+    }
+    
+    public void regresarToken(int token){
+        lexList.push(token);
+    }
+    
+    
 }
