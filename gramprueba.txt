@@ -1,0 +1,4 @@
+E -> EorT | T
+T -> T&C | C
+C -> C+ | C* | C?SIMB | F
+F -> (E) | [SIMB-SIMB] | SIMB
