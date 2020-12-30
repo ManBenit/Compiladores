@@ -1,0 +1,7 @@
+E -> TE'
+E' -> orTE'| ep
+T -> CT'
+T' -> &CT'| ep
+C -> FC'
+C' -> +C' | *C' | ?C' | ep
+F -> (E) | num | [SIMB-SIMB]
