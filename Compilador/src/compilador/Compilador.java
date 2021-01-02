@@ -2,9 +2,12 @@ package compilador;
 
 import AnalizadorLexico.AFD;
 import AnalizadorLexico.AFN;
+import AnalizadorLexico.AnalizadorLexico;
 import AnalizadorLexico.ClaseLexica;
 import AnalizadorLexico.Estado;
 import AnalizadorLexico.Transicion;
+import AnalizadorSintactico.CreadorAutomatas;
+import GUI.Monitor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,32 +21,30 @@ public class Compilador {
         //Prueba con la tarea realizada casi al inicio del curso
         Ejemplo p= new Ejemplo();
         p.ejemploRango();
+        //p.pruebaGeneradorAfn();
         
-        
-        AFD afd= p.afd();
+        AnalizadorLexico lexic= new AnalizadorLexico(p.afd());
         //String cad= "DD.DDTTLLDEMEEP";//DD.DDTTLLDEMEEP
         String cad= "12.34      AB5 +  *";
-        if(afd.validarCadena(cad))
+        //String cad= "      12.34AB5 +  *";
+        if(lexic.validarCadena(cad))
             System.out.println("CADENA VÁLIDA");
         else
             System.out.println("CADENA INVÁLIDA");
         
         int token=0;
         try{
-            while((token=afd.yylex())!=0){
-                System.out.println(afd.yytex()+", token "+token);
+            while((token=lexic.yylex())!=0){
+                System.out.println(lexic.yytex()+", token "+token);
             }
         }catch(NoSuchElementException ex){
             System.out.println("Todo leído");
         }
+        
+        
+        new Monitor().setVisible(true);
+        //CreadorAutomatas ca= new CreadorAutomatas("../gramatest.txt");
+        
     }    
     
-    
-    
-    private static String adaptarRuta(String ruta){
-        if(System.getProperty("os.name").equals("Windows"))
-            return ruta.replace("/", "\\");
-        else
-            return ruta;
-    }
 }

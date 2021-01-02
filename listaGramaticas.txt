@@ -1,0 +1,43 @@
+Gramática de operaciones aritméticas
+E -> E+T | E-T | T
+T -> T*F | T/F | F
+F -> (E) | num
+
+Gramática de autómatas
+E -> EorT | T
+T -> T&C | C
+C -> C+ | C* | C? | F
+F -> (E) | S
+
+E -> EorT | T
+T -> T&C | C
+C -> C+ | C* | C? | F
+F -> (E) | [SIMB, SIMB] | \SIMB | SIMB
+
+Gramática de booleanos
+S: SimpleBoolean
+I: Implication
+A: BooleanTerm
+B: BooleanFactor
+C: BooleanSecondary
+D: BooleanPrimary
+L: LogicalValue
+
+S -> I | ScongI
+I -> A | IsuperconjA
+A -> B | AvB
+B -> C | B^C
+C -> D | ¬D
+D -> L | i | (S)
+L -> true | false
+
+
+
+public static void main(String args[]) {
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new Monitor().setVisible(true);
+            }
+        });
+    }

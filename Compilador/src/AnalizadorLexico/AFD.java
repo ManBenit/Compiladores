@@ -9,111 +9,19 @@ import java.util.Map;
 public class AFD{
     private LinkedList<Estado> estados;
     //private Map<String, Integer> yyList;
-    private LinkedList<Integer> lexList;
-    private LinkedList<String> texList;
+    
     private ArrayList<Character> alfabeto;
     private int[][] tablaEstados;
     private final String nombre;
     private LinkedList<HashSet<Estado>> conjEstados;
     
-    public AFD(String nombre){
-        alfabeto= ClaseLexica.ALFABETO;
+    public AFD(String nombre, ArrayList<Character> alfabeto){
+        this.alfabeto= alfabeto;
         estados= new LinkedList<>();
         //yyList= new HashMap();
-        lexList= new LinkedList<>();
-        texList= new LinkedList<>();
+        
 //        conjEstados= new LinkedList<>();
         this.nombre=nombre;
-    }
-    
-    public boolean validarCadena(String cadena){
-        boolean valida=true;
-        ArrayList<Integer> idEdos= new ArrayList<>();
-        for(Estado e: estados)
-            idEdos.add(e.id());
-        StringBuilder sb= new StringBuilder(""); //Evita el uso de índices de fin e inicio
-        char[] cad= cadena.toCharArray();
-        int indEstadoActual=0; //Recorre las filas
-        boolean previoAceptado= false;
-        int contRechazo=0;//Para evitar bucles infinitos en caso de error
-        
-        int token=0;
-        String lexema= "";
-        
-        //Si el caracter actual es el fin de la cadena
-        
-        //Analizar cada caracter
-        int inicio=0, fin=0, indiceCadena=0;
-        while(indiceCadena<cad.length){
-            //Se aumenta 1 la posición de la culumna debido a que la columna 0 es la de los estados de arranque
-            int posible= tablaEstados[indEstadoActual][alfabeto.indexOf(cad[indiceCadena])+1]; 
-            if(posible>-1){ //Si hay transicion de estadoActual con c a algún estado
-                indEstadoActual=idEdos.indexOf(posible);
-                
-                int auxToken= tablaEstados[indEstadoActual][alfabeto.size()+1]; //tabla[indiceAct][ultima columna]
-                //System.out.println("token: "+token);
-                if(auxToken>0){ //Si es un estado de aceptación
-                    //posRecordada=indiceCadena;
-                    token=auxToken;
-                    previoAceptado=true;
-                    sb.append(cad[indiceCadena]);
-                }
-                else{
-                    if(previoAceptado){
-                        sb.append(cad[indiceCadena]);
-//                        recToken=token;
-                        
-                        previoAceptado=false;
-                    }
-                }
-                
-                indiceCadena+=1; //Se pasa al siguiente caracter
-            }
-            else{ //No hubo transición
-                if(!previoAceptado){ //Si no ha habido aceptación, hay error
-//                    System.out.printf("Rechazado %c, posición %d\n", cad[indiceCadena], indiceCadena);
-                    sb.delete(0, sb.length());
-                    indEstadoActual=0;
-//                    indiceCadena=0;
-                    contRechazo+=1;
-                }
-                else{
-                    //Regresar al último índice con aceptación
-                    //indiceCadena=posRecordada;
-                    lexema= sb.toString();
-                    //System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
-                    //yyList.put(lexema, token);
-                    texList.push(lexema);
-                    lexList.push(token);
-                    sb.delete(0, sb.length());
-                    previoAceptado=false;
-                }
-            }
-            
-            //En el peor caso, todos los símbolos de la cadena representan un lexema de un solo caracter,
-            //por lo que el número de rechazos en el análisis es menor a la longitud de la cadena,
-            //por lo tanto, en cualquier otro caso, el número es siempre menor, en caso contrario,
-            //se está empezando un ciclo infinito, ahí la cadena se invalida.
-            //(Esto es sobretodo para controlar el punto, poque dos puntos fuera de lugar hacen cciclo infinito)
-            //(Esta condición debe desaparecer, ya que no debe ser necesaria)
-            if(contRechazo>=cadena.length()){
-                valida=false;
-                break;
-            }
-                
-            
-            
-        }
-        
-        //Cuando se acaba la cadena, ver el último lexema
-        if( !(lexema=sb.toString()).equals("") && valida){
-            //System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
-            texList.push(lexema);
-            lexList.push(token);
-        }
-        
-        
-        return valida;
     }
     
     public void convertir(AFN afn){
@@ -122,6 +30,8 @@ public class AFD{
         //Crear estado para cada subconjunto
         int idDisc=conjEstados.size()-1; //Discriminante del ID
         int id=0;
+        
+        //Crear un nuevo estado por cada subconjunto de estados
         for(HashSet<Estado> conjunto: conjEstados){
             boolean ini= false, acep=false;
             int token=0;
@@ -200,7 +110,6 @@ public class AFD{
                 }
             }
                 
-            
             indice+=1;
         }
     }
@@ -225,6 +134,10 @@ public class AFD{
         return alfabeto;
     }
     
+    public LinkedList<Estado> estados(){
+        return estados;
+    }
+    
     private LinkedList<HashSet<Estado>> obtConjEdos(AFN afn){
         HashSet<Estado> cEstados; //Conjuntos de estados a analizar
         LinkedList<HashSet<Estado>> S= new LinkedList(); //Pila de comprobación
@@ -233,29 +146,16 @@ public class AFD{
         
         //Calcular S0
         cEstados= cerraduraEpsilon(afn.estadoInicial());
-        /*for(Estado e: cEstados)
-            System.out.print(e+", ");
-        System.out.println("");*/
         S.add(cEstados);
         utiles.add(cEstados);
-        //System.out.println("Alfa "+alfabeto.size());
+        
         //Análisis del resto de estados
-        HashSet<Estado> auxIra= null;
         int i=0, cont=0;
         while(i<S.size()){
             cEstados= S.pop();
             for(char s: alfabeto){
                 HashSet<Estado> ira= irA(cEstados, s);
-//                System.out.println("---"+s+"---");
-//                for(Estado e: ira)
-//                    System.out.print(e+", ");
-//                System.out.println("\n------");
                 if(ira.size()>0){  
-                    
-//                    System.out.println("--------util-------");
-//                    for(Estado ee: ira)
-//                        System.out.print(ee+", ");
-//                    System.out.println("\n-------------^");
                     if(!S.isEmpty()){
                         if(!S.getLast().equals(ira)){
 
@@ -274,23 +174,7 @@ public class AFD{
                 }
             }
             i+=1;
-//            for(HashSet<Estado> e: S){
-//                for(Estado ee: e)
-//                    System.out.print(ee+", ");
-//                System.out.println("");
-//            }
-            
-//            if(i==1)
-//                break;
-            //System.out.println("sdfdsfsdf");
         }
-        /*System.out.println("Len: "+utiles.size()+" cont: "+cont);
-        for(HashSet<Estado> e: utiles){
-            for(Estado ee: e)
-                System.out.print(ee+", ");
-            System.out.println("");
-        }*/
-        //Meter conjunto a lista
         for(HashSet<Estado> hs: utiles)
             utilRet.add(hs);
         
@@ -379,18 +263,5 @@ public class AFD{
         
         return sb.toString();
     }
-    
-    public int yylex(){
-        return lexList.pop();
-    }
-    
-    public String yytex(){
-        return texList.pop();
-    }
-    
-    public void regresarToken(int token){
-        lexList.push(token);
-    }
-    
     
 }

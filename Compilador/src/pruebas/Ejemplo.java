@@ -19,12 +19,14 @@ public class Ejemplo {
 
     public void verEjemplo(){
         String rutaCarga= adaptarRuta("../DescriptorClases/claslex.txt");
-        ClaseLexicaPrueba.cargarClasesLexicas(rutaCarga);
         ArrayList<AFN> elementosUnificacion= new ArrayList();
+        ClaseLexica miclaselex= new ClaseLexica(rutaCarga);
+        String cl="";
 
-        AFN a1= new AFN(ClaseLexicaPrueba.obtNomClases()[0]);
-        AFN a2= new AFN(ClaseLexicaPrueba.obtNomClases()[0]);
-        AFN a3= new AFN(ClaseLexicaPrueba.obtNomClases()[0]);
+        cl= miclaselex.nombreClases()[0];
+        AFN a1= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a2= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a3= new AFN(cl, miclaselex.tokenClase(cl));
         a1.crearBasico('L');
         a2.crearBasico('D');
         a1.unir(a2);
@@ -35,16 +37,18 @@ public class Ejemplo {
         //System.out.println(a3);
         //System.out.println("");
         
-        AFN a4= new AFN(ClaseLexicaPrueba.obtNomClases()[1]);
+        cl= miclaselex.nombreClases()[1];
+        AFN a4= new AFN(cl, miclaselex.tokenClase(cl));
         a4.crearBasico('D');
         a4.cTransitiva();
         elementosUnificacion.add(a4);
         //System.out.println(a4);
         //System.out.println("");
         
-        AFN a5= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
-        AFN a6= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
-        AFN a7= new AFN(ClaseLexicaPrueba.obtNomClases()[2]);
+        cl= miclaselex.nombreClases()[2];
+        AFN a5= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a6= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a7= new AFN(cl, miclaselex.tokenClase(cl));
         a5.crearBasico('D');
         a6.crearBasico('.');
         a7.crearBasico('D');
@@ -56,20 +60,23 @@ public class Ejemplo {
         //System.out.println(a5);
         //System.out.println("");
         
-        AFN a8= new AFN(ClaseLexicaPrueba.obtNomClases()[3]);
+        cl= miclaselex.nombreClases()[3];
+        AFN a8= new AFN(cl, miclaselex.tokenClase(cl));
         a8.crearBasico('M');
         elementosUnificacion.add(a8);
         //System.out.println(a8);
         //System.out.println("");
         
-        AFN a9= new AFN(ClaseLexicaPrueba.obtNomClases()[4]);
+        cl= miclaselex.nombreClases()[4];
+        AFN a9= new AFN(cl, miclaselex.tokenClase(cl));
         a9.crearBasico('P');
         elementosUnificacion.add(a9);
         //System.out.println(a9);
         //System.out.println("");
         
-        AFN a10= new AFN(ClaseLexicaPrueba.obtNomClases()[5]);
-        AFN a11= new AFN(ClaseLexicaPrueba.obtNomClases()[5]);
+        cl= miclaselex.nombreClases()[5];
+        AFN a10= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a11= new AFN(cl, miclaselex.tokenClase(cl));
         a10.crearBasico('E');
         a11.crearBasico('T');
         a10.unir(a11);
@@ -82,7 +89,7 @@ public class Ejemplo {
         AFN total= AFN.unificarInicial(elementosUnificacion);
         escribir(total, adaptarRuta("../AFN.txt"));
         
-        afd= new AFD("Tarea autómata");
+        afd= new AFD("Tarea autómata", miclaselex.alfabeto());
         afd.convertir(total);
         escribir(afd, adaptarRuta("../AFD.txt"));
         
@@ -93,18 +100,14 @@ public class Ejemplo {
     
     public void ejemploRango(){
         String rutaCarga= adaptarRuta("../gramatest.txt");
-        ClaseLexica.cargarClasesLexicas(rutaCarga);
-        /*for(char c: ClaseLexica.ALFABETO)
-            System.out.print(c+", ");
-        System.out.println("");*/
+        ClaseLexica miclaselex= new ClaseLexica(rutaCarga);
         ArrayList<AFN> elementosUnificacion= new ArrayList();
-        /*for(Object s: ClaseLexica.nombreClases())
-            System.out.print((String)s+", ");
-        System.out.println("");*/
+        String cl="";
 
-        AFN a1= new AFN((String)ClaseLexica.nombreClases()[2]);
-        AFN a2= new AFN((String)ClaseLexica.nombreClases()[2]);
-        AFN a3= new AFN((String)ClaseLexica.nombreClases()[2]);
+        cl= miclaselex.nombreClases()[2];
+        AFN a1= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a2= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a3= new AFN(cl, miclaselex.tokenClase(cl));
         a1.crearBasico('A', 'Z');
         a2.crearBasico('0', '9');
         a1.unir(a2);
@@ -114,17 +117,18 @@ public class Ejemplo {
         elementosUnificacion.add(a3);
 //        System.out.println(a3);
 //        System.out.println("");
-        
-        AFN a4= new AFN((String)ClaseLexica.nombreClases()[4]);
+        cl= miclaselex.nombreClases()[4];
+        AFN a4= new AFN(cl, miclaselex.tokenClase(cl));
         a4.crearBasico('0', '9');
         a4.cTransitiva();
         elementosUnificacion.add(a4);
 //        System.out.println(a4);
 //        System.out.println("");
         
-        AFN a5= new AFN((String)ClaseLexica.nombreClases()[0]);
-        AFN a6= new AFN((String)ClaseLexica.nombreClases()[0]);
-        AFN a7= new AFN((String)ClaseLexica.nombreClases()[0]);
+        cl= miclaselex.nombreClases()[0];
+        AFN a5= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a6= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a7= new AFN(cl, miclaselex.tokenClase(cl));
         a5.crearBasico('0', '9');
         a6.crearBasico('.');
         a7.crearBasico('0', '9');
@@ -136,20 +140,23 @@ public class Ejemplo {
 //        System.out.println(a5);
 //        System.out.println("");
         
-        AFN a8= new AFN((String)ClaseLexica.nombreClases()[5]);
+        cl= miclaselex.nombreClases()[5];
+        AFN a8= new AFN(cl, miclaselex.tokenClase(cl));
         a8.crearBasico('+');
         elementosUnificacion.add(a8);
 //        System.out.println(a8);
 //        System.out.println("");
         
-        AFN a9= new AFN((String)ClaseLexica.nombreClases()[1]);
+        cl= miclaselex.nombreClases()[1];
+        AFN a9= new AFN(cl, miclaselex.tokenClase(cl));
         a9.crearBasico('*');
         elementosUnificacion.add(a9);
 //        System.out.println(a9);
 //        System.out.println("");
         
-        AFN a10= new AFN((String)ClaseLexica.nombreClases()[3]);
-        AFN a11= new AFN((String)ClaseLexica.nombreClases()[3]);
+        cl= miclaselex.nombreClases()[3];
+        AFN a10= new AFN(cl, miclaselex.tokenClase(cl));
+        AFN a11= new AFN(cl, miclaselex.tokenClase(cl));
         a10.crearBasico(' ');
         a11.crearBasico((char)9);
         a10.unir(a11);
@@ -162,7 +169,7 @@ public class Ejemplo {
         AFN total= AFN.unificarInicial(elementosUnificacion);
         escribir(total, adaptarRuta("../AFN.txt"));
         
-        afd= new AFD("Tarea autómata");
+        afd= new AFD("Tarea autómata", miclaselex.alfabeto());
         afd.convertir(total);
         escribir(afd, adaptarRuta("../AFD.txt"));
         
@@ -184,16 +191,16 @@ public class Ejemplo {
 //        //System.out.println(a3);
 //        //System.out.println("");
 //        
-//        AFN a4= new AFN((String)ClaseLexica.nombreClases()[4]);
+//        AFN a4= new AFN(ClaseLexica.nombreClases()[4]);
 //        a4.crearBasico('D');
 //        a4.cTransitiva();
 //        elementosUnificacion.add(a4);
 //        //System.out.println(a4);
 //        //System.out.println("");
 //        
-//        AFN a5= new AFN((String)ClaseLexica.nombreClases()[0]);
-//        AFN a6= new AFN((String)ClaseLexica.nombreClases()[0]);
-//        AFN a7= new AFN((String)ClaseLexica.nombreClases()[0]);
+//        AFN a5= new AFN(ClaseLexica.nombreClases()[0]);
+//        AFN a6= new AFN(ClaseLexica.nombreClases()[0]);
+//        AFN a7= new AFN(ClaseLexica.nombreClases()[0]);
 //        a5.crearBasico('D');
 //        a6.crearBasico('.');
 //        a7.crearBasico('D');
@@ -205,20 +212,20 @@ public class Ejemplo {
 //        //System.out.println(a5);
 //        //System.out.println("");
 //        
-//        AFN a8= new AFN((String)ClaseLexica.nombreClases()[5]);
+//        AFN a8= new AFN(ClaseLexica.nombreClases()[5]);
 //        a8.crearBasico('M');
 //        elementosUnificacion.add(a8);
 //        //System.out.println(a8);
 //        //System.out.println("");
 //        
-//        AFN a9= new AFN((String)ClaseLexica.nombreClases()[1]);
+//        AFN a9= new AFN(ClaseLexica.nombreClases()[1]);
 //        a9.crearBasico('P');
 //        elementosUnificacion.add(a9);
 //        //System.out.println(a9);
 //        //System.out.println("");
 //        
-//        AFN a10= new AFN((String)ClaseLexica.nombreClases()[3]);
-//        AFN a11= new AFN((String)ClaseLexica.nombreClases()[3]);
+//        AFN a10= new AFN(ClaseLexica.nombreClases()[3]);
+//        AFN a11= new AFN(ClaseLexica.nombreClases()[3]);
 //        a10.crearBasico('E');
 //        a11.crearBasico('T');
 //        a10.unir(a11);
@@ -237,6 +244,18 @@ public class Ejemplo {
 //        
 //        
 //        escribirTablaEdos(afd.tablaDeEstados(), afd.alfabeto(), adaptarRuta("../TablaAFD.txt"));
+    }
+    
+    public void pruebaGeneradorAfn(){
+        String rutaCarga= adaptarRuta("../gramatest.txt");
+        ClaseLexica miclaselex= new ClaseLexica(rutaCarga);
+        for(String s: miclaselex.nombreClases())
+            System.out.println(s+"\t"+miclaselex.regexClase(s));
+//        for(AFN f: miclaselex.afnBasicos())
+//            System.out.println(f);
+        ArrayList<AFN> elementosUnificacion= new ArrayList();
+        String cl="";
+        
     }
     
     public AFD afd(){

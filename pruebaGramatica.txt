@@ -1,0 +1,5 @@
+S -> aABC
+A -> bbD
+B -> a | ep
+C -> b | ep
+D -> d | ep
