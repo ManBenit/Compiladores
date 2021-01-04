@@ -1,0 +1,11 @@
+ORsep\|sep1
+CONCsep\&sep2
+CERR_POSsep\+sep3
+CERR_KLEENEsep\*sep4
+OPCsep\?sep5
+PAR_Isep\(sep6
+PAR_Dsep\)sep7
+CORCH_Isep\[sep8
+CORCH_Dsep\]sep9
+GUIONsep\-sep10
+SIMBsep(\\[33-126])|[33-126]sep11

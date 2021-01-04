@@ -13,26 +13,38 @@ public class CreadorAutomatas {
     private Map<Integer, Integer> claseslexicasExprReg;
     private String[] expresionesRegulares;
     private AnalizadorLexico lexic;
+    private int posicionClase=0;
     //Se ponen aquí los valores de las clases léxicas y tokens de las expresiones regualres apra los autóamtas, porque en
     //sí mismas no tienen expresión regular, así que no es necesario un archivo. (BETA)
-    public static final int OR=1, CONC=2, CERR_POS=3, CERR_KLEENE=4, OPC=5, PAR_I=6, PAR_D=7, CORCH_I=8, CORCH_D=9, GUION=10, SIMB=11;
+    public static final int OR=1, CONC=2, CERR_POS=3, CERR_KLEENE=4, OPC=5, PAR_I=6, PAR_D=7, CORCH_I=8, CORCH_D=9, GUION=10, SIMB=11, FIN=12;
     
-    public CreadorAutomatas(String cargaDeClaseslexicas){
+    public CreadorAutomatas(String cargaDeClaseslexicas, AFD auxiliar){
         claseslexicasExprReg= new HashMap();
-        lexic= new AnalizadorLexico(null);
         ClaseLexica miclaselex= new ClaseLexica( adaptarRuta(cargaDeClaseslexicas) );
+        lexic= new AnalizadorLexico(auxiliar);
+        
         
 //        for(AFN o: miclaselex.afnBasicos()){
 //            System.out.println(o);
 //        }
-        for(String o: miclaselex.listaRegex()){
-            System.out.println(o);
-        }
+//        for(String o: miclaselex.listaRegex()){
+//            System.out.println(o);
+//        }
         
     }
     
+    public boolean iniciar(AFN f){
+        int token=0;
+        if(E(f)){
+            token=lexic.yylex();
+            if(token==FIN)
+                return true;
+        }
+        return false;
+    }
+    
     //E -> TE'
-    boolean E(AFN f){
+    private boolean E(AFN f){
         if(T(f))
             if(Epr(f))
                 return true;
@@ -40,7 +52,7 @@ public class CreadorAutomatas {
     }
     
     //E' -> orTE' | ep
-    boolean Epr(AFN f){
+    private boolean Epr(AFN f){
         int tok= lexic.yylex();
         AFN f2= null; //Lo requiere T
         
@@ -52,12 +64,12 @@ public class CreadorAutomatas {
             }
             return false;
         }
-        lexic.regresarToken(tok); //Épsilon
+        lexic.regresarToken(); //Épsilon
         return true;
     }
     
     //T -> CT'
-    boolean T(AFN f){
+    private boolean T(AFN f){
         if(C(f))
             if(Tpr(f))
                 return true;
@@ -65,7 +77,7 @@ public class CreadorAutomatas {
     }
     
     //T' -> &CT* | ep
-    boolean Tpr(AFN f){
+    private boolean Tpr(AFN f){
         int tok=lexic.yylex();
         AFN f2= null;
         
@@ -77,12 +89,12 @@ public class CreadorAutomatas {
             }
             return false;
         }
-        lexic.regresarToken(tok);
+        lexic.regresarToken();
         return true;
     }
     
     //C -> FC'
-    boolean C(AFN f){
+    private boolean C(AFN f){
         if(F(f))
             if(Cpr(f))
                 return true;
@@ -90,7 +102,7 @@ public class CreadorAutomatas {
     }
     
     //C' -> +C' | *C' | ?C' | Ep
-    boolean Cpr(AFN f){
+    private boolean Cpr(AFN f){
         int tok= lexic.yylex();
         switch(tok){
             case CERR_POS:
@@ -112,13 +124,13 @@ public class CreadorAutomatas {
                 return false;
 
             default:
-                lexic.regresarToken(tok);
+                lexic.regresarToken();
                 return true;
         }
     }
     
     //F -> (E) | [SIMB-SIMB] | SIMB
-    boolean F(AFN f){
+    private boolean F(AFN f){
             int tok=lexic.yylex();
             String lexem1="", lexem2="";
             switch(tok){

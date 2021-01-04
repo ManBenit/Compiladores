@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class AnalizadorLexico {
+    private int tokenRecordado;
+    private String lexemaRecordado;
     private LinkedList<Integer> lexList;
     private LinkedList<String> texList;
     private LinkedList<Estado> estados;
@@ -76,7 +78,7 @@ public class AnalizadorLexico {
                     lexema= sb.toString();
                     //System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
                     //yyList.put(lexema, token);
-                    texList.push(lexema);
+                    texList.push(lexema); //Aquí avisar que hay un nuevo lexema encontrado****************************
                     lexList.push(token);
                     sb.delete(0, sb.length());
                     previoAceptado=false;
@@ -101,7 +103,7 @@ public class AnalizadorLexico {
         //Cuando se acaba la cadena, ver el último lexema
         if( !(lexema=sb.toString()).equals("") && valida){
             //System.out.printf("[ Lexema: %s , Token: %d ]\n", lexema, token);
-            texList.push(lexema);
+            texList.push(lexema);//Aquí avisar que hay un nuevo lexema encontrado****************************
             lexList.push(token);
         }
         
@@ -109,15 +111,19 @@ public class AnalizadorLexico {
         return valida;
     }
     
-    public int yylex(){
-        return lexList.pop();
+    public int yylex(){ //Al detectar que se llama este o yytex, verificar si hay algo disponible, si no, analizar hasta que haya algo
+        tokenRecordado= lexList.pop();
+        return tokenRecordado;
     }
     
     public String yytex(){
-        return texList.pop();
+        lexemaRecordado= texList.pop();
+        return lexemaRecordado;
     }
     
-    public void regresarToken(int token){
-        lexList.push(token);
+    public void regresarToken(){
+        lexList.push(tokenRecordado);
+        if(!lexemaRecordado.equals(""))
+            texList.push(lexemaRecordado);
     }
 }

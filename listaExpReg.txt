@@ -22,12 +22,15 @@ PRODsepPsep50
 TABsep(E|T)+sep60
 
 CLASES LEXICAS DE LA CREACIÓN AUTOMÁTICA DE AFN
-sep1
-sep2
-sep3
-sep4
-sep5
-sep6
-sep7
-sep8
+ORsep\|sep1
+CONCsep\&sep2
+CERR_POSsep\+sep3
+CERR_KLEENEsep\*sep4
+OPCsep\?sep5
+PAR_Isep\(sep6
+PAR_Dsep\)sep7
+CORCH_Isep\[sep8
+CORCH_Isep\]sep9
+GUIONsep\-sep10
+SIMBsep(\\[0-255])|[0-255]sep11
 

@@ -84,12 +84,24 @@ public class ClaseLexica {
                     int[] lims= new int[2]; //limInf, limSup
                     int pos=0;
                     int j=i+1;
-                    while(expPartes[j]!=']'){
-                        if(expPartes[j]!='-'){
-                            lims[pos]=(int)expPartes[j];
-                            pos+=1;
+                    if(clase.equals("SIMB")){ //Cuando se haga el alfabeto de los autómatas
+                        StringBuilder sb= new StringBuilder("");
+                        while(expPartes[j]!=']'){
+                            sb.append(expPartes[j]);
+                            j+=1;
                         }
-                        j+=1;
+                        String[] nLims= sb.toString().split("-");
+                        lims[0]= Integer.parseInt(nLims[0]);
+                        lims[1]= Integer.parseInt(nLims[1]);
+                    }
+                    else{
+                        while(expPartes[j]!=']'){
+                            if(expPartes[j]!='-'){
+                                lims[pos]=(int)expPartes[j];
+                                pos+=1;
+                            }
+                            j+=1;
+                        }
                     }
 
                     for(int a=lims[0]; a<=lims[1]; a++)
@@ -225,7 +237,11 @@ public class ClaseLexica {
             
         }
         
-        try{
+        /*for(char c: ALFABETO){
+            System.out.println(c);
+        }*/
+        
+        /*try{
             FileWriter fw= new FileWriter(new File("..\\sumadre.txt"));
             for(char c: ALFABETO){
                 fw.append(c);
@@ -234,7 +250,7 @@ public class ClaseLexica {
             fw.close();
         }catch(IOException ex){
             System.out.println("error");
-        }
+        }*/
     }
     
 //    public LinkedList<AFN> afnBasicos(){
