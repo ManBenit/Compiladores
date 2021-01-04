@@ -6,6 +6,7 @@ import AnalizadorLexico.AnalizadorLexico;
 import AnalizadorLexico.ClaseLexica;
 import AnalizadorLexico.Estado;
 import AnalizadorLexico.Transicion;
+import AnalizadorSintactico.CreadorAnaLex;
 import AnalizadorSintactico.CreadorAutomatas;
 import GUI.Monitor;
 import java.io.BufferedWriter;
@@ -152,9 +153,11 @@ public class Compilador {
         //new Compilador(); 
         
         
-        AFN afnAnalizador= new AFN("Total", 0);
-        CreadorAutomatas accionSemantica= new CreadorAutomatas(adaptarRuta("../gramatest.txt"), generarAuxiliar());
-        accionSemantica.iniciar(afnAnalizador);
+//        AFN afnAnalizador= new AFN("Total", 0);
+//        CreadorAutomatas accionSemantica= new CreadorAutomatas(adaptarRuta("../gramatest.txt"), generarAuxiliar());
+//        accionSemantica.iniciar(afnAnalizador);
+
+        CreadorAnaLex cal= new CreadorAnaLex(adaptarRuta("../grambienprueba.txt"));
         
     }
     

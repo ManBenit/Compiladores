@@ -10,22 +10,50 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class CreadorAnaLex {
 //    private LinkedList<String> ladoIzquierdo;
 //    private LinkedList<String> ladoDerecho;
     private boolean flagTerminal=false; //true: terminal, false: no terminal
-    private Map<String, LinkedList<String>> gramLeida;
+    //private LinkedHashMap< String, Map<Integer, LinkedList<String>> > gramLeida;
+    private LinkedHashMap< String, LinkedList<Object[]> > gramLeida;
+    //[str: [[], int]]
+    //[valor: [int: []]] <- python
+    //Map<Valor, Cosa> <- java
+    //[ valor: [ [numRegla, regla] ] ]
+    //Map< Valor, LinkedList< Map<Integer, String> > >
     
-    public CreadorAnaLex(){
+    public CreadorAnaLex(String ruta){
         //ladoIzquierdo= new LinkedList<>();
         //ladoDerecho= new LinkedList<>();
-        gramLeida= new HashMap();
+        gramLeida= new LinkedHashMap();
+        mapearGramatica(ruta);
+        
+        int nr=0;
+        String r="";
+        boolean term=false;
+        for(String llave: gramLeida.keySet()){
+            System.out.println(llave);
+            LinkedList<Object[]> lista= gramLeida.get(llave);
+            for(int i=0; i<lista.size(); i++){
+                Object[] ao= lista.get(i);
+                nr= (int)ao[0];
+                r= (String)ao[1];
+                term= (boolean)ao[2];
+                System.out.print("\t"+nr);
+                System.out.print("\t"+r);
+                System.out.println("\t"+term);
+            }
+        }
     }
     
     private void mapearGramatica(String ruta){
+        int numeroRegla=1;
+        boolean elBool;
         try{
             BufferedReader br= new BufferedReader(new FileReader(new File(adaptarRuta(ruta))));
             
@@ -33,8 +61,24 @@ public class CreadorAnaLex {
             while((str= br.readLine()) != null){
                 str.replace(" ", "");
                 String[] splitline= str.split("->"); //Separar ambos lados
-                String[] ladosDerechos= splitline[1].split("|"); //Separar lados derechos
-                gramLeida.put(splitline[0], new LinkedList(Arrays.asList(ladosDerechos)));
+                String[] ladosDerechos= splitline[1].split("\\|"); //Separar lados derechos
+                
+                LinkedList<Object[]> auxList= new LinkedList();
+                
+                for(String laDer: ladosDerechos){
+                    Object[] mapa= new Object[3]; //Integer, String
+                    mapa[0]= numeroRegla;
+                    mapa[1]= laDer.trim();
+                    mapa[2]= esTerminal(laDer.trim().charAt(0));
+//                    System.out.println("elladoderecho: "+laDer);
+//                    System.out.println("elcharat: "+laDer.trim().charAt(0));
+//                    System.out.println("numReg:"+mapa[0]);
+//                    System.out.println("Regla:"+mapa[1]);
+                    auxList.add(mapa);
+                    numeroRegla+=1;
+                }
+                gramLeida.put(splitline[0], auxList);
+                firstest();
             } 
             br.close();
         } catch (IOException ex) {
@@ -43,14 +87,14 @@ public class CreadorAnaLex {
     }
     
     private boolean esTerminal(char c){
-        return !( (int)c >= 65 && (int)c <= 90 );
+        return !((int)c >= 65 && (int)c <= 90);
     }
     
     private HashSet<String> first(String nodo){
         HashSet<String> R=null;
         String aux;
         
-        if( esTerminal(nodo.charAt(0)) || (int)nodo.charAt(0)==400 ){
+        if( esTerminal(nodo.charAt(0)) || (int)nodo.charAt(0)==400 ){ //400 es el Unicode de épsilon
             R.add(nodo);
             return R;
         }
@@ -62,5 +106,81 @@ public class CreadorAnaLex {
             return ruta.replace("/", "\\");
         else
             return ruta;
+    }
+    
+    /*private Object[] obtDatos(String llave){
+        LinkedList<Object[]> lista= gramLeida.get(llave);
+        for(int i=0; i<lista.size(); i++){
+        System.out.print("\t"+nr);
+            System.out.print("\t"+r);
+            System.out.println("\t"+term);
+        }
+        
+    }
+    private String regla(String llave, int numRegla){
+        LinkedList<Object[]> lista= gramLeida.get(llave);
+        return (String)lista.get(numRegla)[1];
+    }
+    private int numRegla(String llave){
+        
+    }
+    private boolean reglaEsTerminal(String llave){
+        
+    }*/
+            
+            
+            /*
+            
+            */
+    private String firstest(/*boolean ban*/){
+//        if(ban){
+//            for(String llave: gramLeida.keySet()){
+//           // System.out.println(llave);
+//            LinkedList<Object[]> lista= gramLeida.get(llave);
+//            for(int i=0; i<lista.size(); i++){
+//                if (esTerminal(((String)lista.get(i)[1]).charAt(0))){
+//                    
+//                }
+//                }
+//            }
+//        }
+        
+        
+        
+        for(String llave: gramLeida.keySet()){
+            StringBuilder sb= new StringBuilder("");
+            LinkedList<Object[]> lista= gramLeida.get(llave);
+            int cont=0;
+            for(int i=0; i<lista.size(); i++){
+                Object[] ao= lista.get(i);
+//                nr= (int)ao[0];
+//                r= (String)ao[1];
+//                term= (boolean)ao[2];
+//                if(i==lista.size()-1){
+
+
+                    if((boolean)ao[2]){
+                        String regla= (String)ao[1];
+                        for(int j=0; j<regla.toCharArray().length; j++){
+                            if(esTerminal(regla.charAt(j)))
+                                sb.append(regla.charAt(j));
+                            else
+                                break;
+                        }
+
+                    }
+                    
+                        System.out.println(sb.toString());
+                        if(sb.toString().equalsIgnoreCase("ep"))
+                            System.out.println("Entrar al follow");
+
+                        sb.delete(0, sb.length());
+//                }
+                
+            }
+        }
+        
+        
+        return "";
     }
 }

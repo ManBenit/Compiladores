@@ -80,7 +80,7 @@ public class AnalizadorLexico {
                     //yyList.put(lexema, token);
                     texList.push(lexema); //Aquí avisar que hay un nuevo lexema encontrado****************************
                     lexList.push(token);
-                    sb.delete(0, sb.length());
+                    sb.delete(0, sb.length());                    
                     previoAceptado=false;
                 }
             }
