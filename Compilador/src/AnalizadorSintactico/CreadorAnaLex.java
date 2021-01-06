@@ -13,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class CreadorAnaLex {
@@ -21,15 +22,9 @@ public class CreadorAnaLex {
     private boolean flagTerminal=false; //true: terminal, false: no terminal
     //private LinkedHashMap< String, Map<Integer, LinkedList<String>> > gramLeida;
     private LinkedHashMap< String, LinkedList<Object[]> > gramLeida;
-    //[str: [[], int]]
-    //[valor: [int: []]] <- python
-    //Map<Valor, Cosa> <- java
-    //[ valor: [ [numRegla, regla] ] ]
-    //Map< Valor, LinkedList< Map<Integer, String> > >
+    private int numeroRegla=0; //Indica la cantidad de reglas que hay
     
     public CreadorAnaLex(String ruta){
-        //ladoIzquierdo= new LinkedList<>();
-        //ladoDerecho= new LinkedList<>();
         gramLeida= new LinkedHashMap();
         mapearGramatica(ruta);
         
@@ -52,7 +47,7 @@ public class CreadorAnaLex {
     }
     
     private void mapearGramatica(String ruta){
-        int numeroRegla=1;
+        numeroRegla=1;
         boolean elBool;
         try{
             BufferedReader br= new BufferedReader(new FileReader(new File(adaptarRuta(ruta))));
@@ -70,16 +65,13 @@ public class CreadorAnaLex {
                     mapa[0]= numeroRegla;
                     mapa[1]= laDer.trim();
                     mapa[2]= esTerminal(laDer.trim().charAt(0));
-//                    System.out.println("elladoderecho: "+laDer);
-//                    System.out.println("elcharat: "+laDer.trim().charAt(0));
-//                    System.out.println("numReg:"+mapa[0]);
-//                    System.out.println("Regla:"+mapa[1]);
                     auxList.add(mapa);
                     numeroRegla+=1;
                 }
                 gramLeida.put(splitline[0], auxList);
-                firstest();
+                
             } 
+            firstest();
             br.close();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
@@ -108,76 +100,38 @@ public class CreadorAnaLex {
             return ruta;
     }
     
-    /*private Object[] obtDatos(String llave){
-        LinkedList<Object[]> lista= gramLeida.get(llave);
-        for(int i=0; i<lista.size(); i++){
-        System.out.print("\t"+nr);
-            System.out.print("\t"+r);
-            System.out.println("\t"+term);
-        }
+    private String firstest(){        
         
-    }
-    private String regla(String llave, int numRegla){
-        LinkedList<Object[]> lista= gramLeida.get(llave);
-        return (String)lista.get(numRegla)[1];
-    }
-    private int numRegla(String llave){
-        
-    }
-    private boolean reglaEsTerminal(String llave){
-        
-    }*/
-            
-            
-            /*
-            
-            */
-    private String firstest(/*boolean ban*/){
-//        if(ban){
-//            for(String llave: gramLeida.keySet()){
-//           // System.out.println(llave);
-//            LinkedList<Object[]> lista= gramLeida.get(llave);
-//            for(int i=0; i<lista.size(); i++){
-//                if (esTerminal(((String)lista.get(i)[1]).charAt(0))){
-//                    
-//                }
-//                }
-//            }
-//        }
-        
-        
-        
+        StringBuilder sb= new StringBuilder("");
         for(String llave: gramLeida.keySet()){
-            StringBuilder sb= new StringBuilder("");
             LinkedList<Object[]> lista= gramLeida.get(llave);
-            int cont=0;
             for(int i=0; i<lista.size(); i++){
                 Object[] ao= lista.get(i);
-//                nr= (int)ao[0];
-//                r= (String)ao[1];
-//                term= (boolean)ao[2];
-//                if(i==lista.size()-1){
 
 
                     if((boolean)ao[2]){
                         String regla= (String)ao[1];
+                        
+                        //Obtener solo operadores
                         for(int j=0; j<regla.toCharArray().length; j++){
-                            if(esTerminal(regla.charAt(j)))
+                            if(esTerminal(regla.charAt(j))){
                                 sb.append(regla.charAt(j));
+                            }
                             else
                                 break;
                         }
-
-                    }
-                    
-                        System.out.println(sb.toString());
-                        if(sb.toString().equalsIgnoreCase("ep"))
+                        System.out.println("Regla #"+(int)ao[0]+" -> "+sb.toString());
+                        if(sb.toString().equalsIgnoreCase("ep")){
                             System.out.println("Entrar al follow");
-
+                            //Cuchau :v
+                            
+                        }else{
+                            System.out.println("Entratr al first");
+                        }
                         sb.delete(0, sb.length());
-//                }
-                
+                    }
             }
+            sb.delete(0, sb.length());
         }
         
         
