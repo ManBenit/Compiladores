@@ -12,7 +12,7 @@ F -> (E) | S
 E -> EorT | T
 T -> T&C | C
 C -> C+ | C* | C? | F
-F -> (E) | [SIMB, SIMB] | \SIMB | SIMB
+F -> (E) | [simb-simb] | \simb | simb
 
 Gramática de booleanos
 S: SimpleBoolean
