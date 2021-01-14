@@ -1,0 +1,14 @@
+		num		(		)		*		+		-		/		$		
+E		[TE', 1]		[TE', 1]		null		null		null		null		null		null		
+E'		null		null		null		[Ɛ, 4]		[+TE', 2]		[-TE', 3]		null		null		
+T		[FT', 5]		[FT', 5]		null		null		null		null		null		null		
+T'		[Ɛ, 8]		null		null		[*FT', 6]		null		[Ɛ, 8]		[Ɛ, 8]		null		
+F		[num, 10]		[(E), 9]		null		null		null		null		null		null		
+num		pop		null		null		null		null		null		null		null		
+(		null		pop		null		null		null		null		null		null		
+)		null		null		pop		null		null		null		null		null		
+*		null		null		null		pop		null		null		null		null		
++		null		null		null		null		pop		null		null		null		
+-		null		null		null		null		null		pop		null		null		
+/		null		null		null		null		null		null		pop		null		
+$		null		null		null		null		null		null		null		aceptar		

@@ -12,31 +12,40 @@ public class CreadorAnaLex {
     private LinkedHashMap< String, LinkedList<Object[]> > gramLeida;
     private int numeroRegla=0; //Indica la cantidad de reglas que hay
     private String[][] tablaLL1;
-    private HashSet<String> alfaGram; //"alfabeto" de la gramática (obtener los símbolos necesarios para la tabla LL1)
+    private LinkedList<String> encabezado;
+    //private HashSet<String> alfaGram; //"alfabeto" de la gramática (obtener los símbolos necesarios para la tabla LL1)
     
     public CreadorAnaLex(String ruta){
+        encabezado= new LinkedList();
         gramLeida= new LinkedHashMap();
         mapearGramatica(ruta);
-//        cargarSimbolos(); //Para hacer tabla LL1
-//        for(String x: alfaGram)
-//            System.out.println(x);
+        cargarSimbolos(); //Para hacer tabla LL1
+//        System.out.print("\t");
+//        for(String e: encabezado)
+//            System.out.print(e+"\t");
+//        System.out.println("");
+//        for(String[] fila: tablaLL1){
+//            for(String columna: fila)
+//                System.out.print(columna+"\t");
+//            System.out.println("");
+//        }
         
-        int nr=0;
-        String r="";
-        boolean term=false;
-        for(String llave: gramLeida.keySet()){
-            System.out.println(llave);
-            LinkedList<Object[]> lista= gramLeida.get(llave);
-            for(int i=0; i<lista.size(); i++){
-                Object[] ao= lista.get(i);
-                nr= (int)ao[0];
-                r= (String)ao[1];
-                term= (boolean)ao[2];
-                System.out.print("\t"+nr);
-                System.out.print("\t"+r);
-                System.out.println("\t"+term);
-            }
-        }
+//        int nr=0;
+//        String r="";
+//        boolean term=false;
+//        for(String llave: gramLeida.keySet()){
+//            System.out.println(llave);
+//            LinkedList<Object[]> lista= gramLeida.get(llave);
+//            for(int i=0; i<lista.size(); i++){
+//                Object[] ao= lista.get(i);
+//                nr= (int)ao[0];
+//                r= (String)ao[1];
+//                term= (boolean)ao[2];
+//                System.out.print("\t"+nr);
+//                System.out.print("\t"+r);
+//                System.out.println("\t"+term);
+//            }
+//        }
     }
     
     private void mapearGramatica(String ruta){
@@ -46,7 +55,6 @@ public class CreadorAnaLex {
             
             String str="";
             while((str= br.readLine()) != null){
-                str.replace(" ", "");
                 String[] splitline= str.split("->"); //Separar ambos lados
                 String[] ladosDerechos= splitline[1].split("\\|"); //Separar lados derechos
                 
@@ -62,54 +70,68 @@ public class CreadorAnaLex {
                 }
                 gramLeida.put(splitline[0].trim(), auxList);
                 
-            } 
-            firstest(); //debemos quitar esta invocación de aquí
+            }
             br.close();
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
     }
     
+    //Método que carga los símbolos terminales y no terminales dentro de la primera columna de la tabla LL1
     private void cargarSimbolos(){
-        alfaGram= new HashSet<>(); //Alfabeto de la gramática
+        HashSet<String> alfaGram= new HashSet<>(); //Alfabeto de la gramática
         StringBuilder sb= new StringBuilder();
         
         for(String llave: gramLeida.keySet()){
             LinkedList<Object[]> lista= gramLeida.get(llave);
             char[] charArray;
-            int aux;
             for(int i=0; i<lista.size(); i++){
                 Object[] ao= lista.get(i);
                 charArray= ((String)ao[1]).toCharArray();
-                for(char c: charArray)
-                    System.out.print(c+", ");
-                System.out.println("");
                 
-                for(int j=0; j<charArray.length; j++){
-                    System.out.println("aux"+j);
-                    if(esTerminal(charArray[j]) && charArray[j]!='\''){
-                        System.out.println("entrado");
-                        if((int)charArray[j]>=97 && (int)charArray[j]<=122){
-                            System.out.println("esmin");
-                            aux= j;
-                            System.out.println("j="+j);
-                            System.out.println("char0"+charArray[aux]);
-                            while((int)charArray[aux]>=97 && (int)charArray[aux]<=122){
-                                sb.append(charArray[aux]);
-                                aux+=1;
+                for(int j=0; j<charArray.length; j++)
+                    if(esTerminal(charArray[j]) && charArray[j]!='\'')
+                        if((int)charArray[j]>=97 && (int)charArray[j]<=122)
+                            sb.append(charArray[j]);
+                        else{
+                            if(!sb.toString().equals("")){
+                                if(!sb.toString().equals("ep"))
+                                    alfaGram.add(sb.toString());
+                                sb.delete(0, sb.length());
                             }
-                            j= aux;
-                            alfaGram.add(sb.toString());
-                            sb.delete(0, sb.length());
-                        }
-                        else
                             alfaGram.add(String.valueOf(charArray[j]));
-                    }
-                    else
-                        System.out.println("nel karnal: "+charArray[j]);
+                        }
+                        
+                //Condición por si algo se quedó guardado
+                if(!sb.toString().equals("")){
+                    if(!sb.toString().equals("ep"))
+                        alfaGram.add(sb.toString());
+                    sb.delete(0, sb.length());
                 }
             }
         }
+        
+        //Ahora que se conoce cuántos no terminales hay, se puede iniciar la matriz
+        //Se agrega 1 a cada uno por el $, y a las columnas se agrega otro más porque tendrá los símbolos de arranque
+        tablaLL1= new String[gramLeida.size()+alfaGram.size()+1][alfaGram.size()+2]; //[filas][columnas]
+        int indiceCol0= 0;
+        
+        //Escribir en la columna 0 los símbolos no terminales
+        for(String simLlave: gramLeida.keySet()){
+            tablaLL1[indiceCol0][0]= simLlave;
+            indiceCol0+=1;
+        }
+        
+        //Escribir en la columna 0 los símbolos  terminales
+        for(String simTerm: alfaGram){
+            tablaLL1[indiceCol0][0]= simTerm;
+            encabezado.add(simTerm);
+            indiceCol0+=1;
+        }
+        
+        //Agregar la representación del fin de cadena
+        tablaLL1[indiceCol0][0]="$";
+        encabezado.add("$");
     }
     
     private String[] first(String nodo){
@@ -173,10 +195,10 @@ public class CreadorAnaLex {
         Object[] N=null;//Modificar
         for(int i=1; i<numeroRegla-1; i++){
             N= buscarSimbolo(A, i); //revLista.get(j);
-            if(N!=null){
+            //Si el nodo no es nulo y no es la regla épsilon (porque habría un arreglo vacío)
+            if(N!=null && !((String)N[1]).equals("ep")){ 
                 auxArray= ((String)N[1]).split(A);
                 if(auxArray.length==1){ //Si es el último símbolo de la regla
-                    System.out.println("simon karnal");
                     if(A.equals( obtLlavePorLadDer( (String)N[1] ) ))//ArrReglas[i].strSimb
                         continue;
                     R.addAll(follow( obtLlavePorLadDer( (String)N[1] ) ));
@@ -186,9 +208,9 @@ public class CreadorAnaLex {
                     for(String auxF: aux){
                         if(auxF!=null){
                             if(auxF.contains("ep")){
-                                auxF= auxF.replace("ep", "\u0190");
+//                                auxF= auxF.replace("ep", "\u0190");
                                 R.add(auxF);
-                                if(!A.equals(aux))
+                                if(!A.equals(auxF))
                                     R.addAll(follow(auxF));
                             }
                             else
@@ -202,30 +224,39 @@ public class CreadorAnaLex {
         return R;
     }
     
-    private String firstest(){    
-//        Object[] o= buscarSimbolo("ep", 8); // 1    TE' false
-//        System.out.print("elNodo:\t");
-//        System.out.print((int)o[0]);
-//        System.out.print("\t"+(String)o[1]);
-//        System.out.println("\t"+(boolean)o[2]);
-
-//        //for(int i=0; i<numeroRegla-1; i++){
-//            String encontrado= buscarIzqEnDer("T'", 5);
-//            if(!encontrado.equals(""))
-//                System.out.println(encontrado);
-//        //}
+    public void firstest(){ 
+        LinkedList<String> auxCol= new LinkedList(); //columna 0 de la tabla
+        for(int i=0; i<tablaLL1.length; i++)
+            auxCol.add(tablaLL1[i][0]);
         
-//        System.out.println(obtLlavePorLadDer("FT'"));
-        
-//        for(String s: first("F"))
-//            if(s!=null)
-//                System.out.println("elFirst: "+s);
+        for(String llave: gramLeida.keySet()){
+            LinkedList<Object[]> lista= gramLeida.get(llave);
+            
+            for(int i=0; i<lista.size(); i++){
+                Object[] ao= lista.get(i);
+                
+                //Verificar si es épsilon
+                if(((String)ao[1]).equals("ep")){ //Si el first es épsilon
+                    HashSet<String> elFollow= follow(llave);
+                    for(String s: elFollow){
+                        tablaLL1[auxCol.indexOf(llave)][encabezado.indexOf(s)+2]= "[\u0190, "+( ((int)ao[0]) )+"]";
+                    }
+                }
+                else{ //Si no, calcular first
+                    String[] elFirst= first(((String)ao[1]));
+                    if(!( (String)ao[1] ).equals("ep")){
+                        for(String s: elFirst){
+                            if(s!=null){
+                                tablaLL1[auxCol.indexOf(llave)][encabezado.indexOf(s)+1]= "["+( (String)ao[1] )+", "+( (int)ao[0] )+"]";
+                            }
+                        }
 
-        for(String s: follow("F"))
-            System.out.println("elFollow: "+s);
-
-        
-        return "";
+                    }
+                }
+                
+            }
+            
+        }
     }
     
     private boolean esTerminal(char c){
@@ -318,10 +349,42 @@ public class CreadorAnaLex {
         return regla;
     }
     
+    private int obtNumReglaDe(String regla, String llaveDeRegla){
+        int numRegla=0;
+        
+        for(String llave: gramLeida.keySet()){
+            LinkedList<Object[]> lista= gramLeida.get(llave);
+            for(int i=0; i<lista.size(); i++){
+                Object[] ao= lista.get(i);
+                if( ((String)ao[1]).equals(regla) && llave.equals(llaveDeRegla)){
+                    numRegla= (int)ao[0];
+                    break;
+                }
+            }
+        }
+        
+        return numRegla;
+    }
+    
+    public String[][] tablaLL1(){
+        int indexCol=0;
+        for(int i=gramLeida.size(); i<tablaLL1.length-1; i++){
+            tablaLL1[i][indexCol+1]= "pop";
+            indexCol+=1;
+        }
+        tablaLL1[tablaLL1.length-1][tablaLL1[0].length-1]= "aceptar";
+        return tablaLL1;
+    }
+    
+    public LinkedList<String> encabezado(){
+        return encabezado;
+    }
+    
     private String adaptarRuta(String ruta){
         if(System.getProperty("os.name").equals("Windows"))
             return ruta.replace("/", "\\");
         else
             return ruta;
     }
+    
 }

@@ -22,6 +22,7 @@ import pruebas.Ejemplo;
 import java.io.File; 
 import java.io.IOException; 
 import java.io.InputStream; 
+import java.util.LinkedList;
 
 public class Compilador {
 
@@ -158,6 +159,18 @@ public class Compilador {
 //        accionSemantica.iniciar(afnAnalizador);
 
         CreadorAnaLex cal= new CreadorAnaLex(adaptarRuta("../grambienprueba.txt"));
+        cal.firstest();
+        escribirTablaLL1(cal.tablaLL1(), cal.encabezado(), "../tablaLL1.txt");
+        
+//        System.out.print("\t\t");
+//        for(String e: cal.encabezado())
+//            System.out.print(e+"\t\t");
+//        System.out.println("");
+//        for(String[] fila: cal.tablaLL1()){
+//            for(String columna: fila)
+//                System.out.print(columna+"\t\t");
+//            System.out.println("");
+//        }
         
     }
     
@@ -290,7 +303,7 @@ public class Compilador {
 
     private static void escribir(Object afn, String ruta){
         try{
-            FileOutputStream f= new FileOutputStream(new File(ruta));
+            FileOutputStream f= new FileOutputStream(new File(adaptarRuta(ruta)));
             f.write(afn.toString().getBytes());
         }catch(IOException ex){
             System.out.println("Fallo al escribir autómata\n"+ex);
@@ -298,7 +311,7 @@ public class Compilador {
     }
     
     private static void escribirTablaEdos(int [][] estados, ArrayList<Character> alfabeto, String ruta){
-        File f= new File(ruta);
+        File f= new File(adaptarRuta(ruta));
         BufferedWriter bw;
         try{
             bw= new BufferedWriter(new FileWriter(f));
@@ -310,6 +323,29 @@ public class Compilador {
             for(int[] ae: estados){
                 for(int e: ae)
                     bw.write(e+"\t");
+                bw.newLine();
+            }
+                
+            bw.flush();
+            bw.close();
+        }catch(IOException ex){
+            //System.out.println("Fallo al escribir tabla\n"+ex);
+        }
+    }
+    
+    private static void escribirTablaLL1(String [][] tabla, LinkedList<String> encabezado, String ruta){
+        File f= new File(adaptarRuta(ruta));
+        BufferedWriter bw;
+        try{
+            bw= new BufferedWriter(new FileWriter(f));
+            
+            bw.write("\t\t");
+            for(String s: encabezado)
+                bw.write(s+"\t\t");
+            bw.newLine();
+            for(String[] fila: tabla){
+                for(String columna: fila)
+                    bw.write(columna+"\t\t");
                 bw.newLine();
             }
                 

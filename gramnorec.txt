@@ -1,5 +1,7 @@
 E -> TE'
-E' -> +TE' | -TE' | ep
-T -> FT'
-T' -> *FT' | /FT' | ep
-F -> (E) | num
+E' -> orTE' | ep
+T -> CT'
+T' -> &CT' | ep
+C -> FC'
+C' -> +C' | *C' | ?C' | ep
+F -> (E) | [simb-simb] | \simb | simb
