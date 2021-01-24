@@ -1,16 +1,16 @@
 package AnalizadorLexico;
 
 //Utilizando método de Thompson
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.LinkedHashSet;
 
 public class AFN {
-    private HashSet<Estado> estados;
+    private LinkedHashSet<Estado> estados;
     private String claseLexica;
     private int token;
     
     public AFN(String claseLexica, int token){
-        estados= new HashSet();
+        estados= new LinkedHashSet();
         this.claseLexica= claseLexica;
         this.token= token;
     }
@@ -31,7 +31,7 @@ public class AFN {
         estados.add(fin);
     }
     
-    public HashSet<Estado> estados(){
+    public LinkedHashSet<Estado> estados(){
         return estados;
     }
     
@@ -45,8 +45,8 @@ public class AFN {
         return ret;        
     }
         
-    public ArrayList<Estado> estadosAceptacion(){
-        ArrayList<Estado> acept= new ArrayList<>();
+    public LinkedList<Estado> estadosAceptacion(){
+        LinkedList<Estado> acept= new LinkedList<>();
         for(Estado e: this.estados)
             if(e.esAceptacion())
                 acept.add(e);
@@ -59,37 +59,61 @@ public class AFN {
     
     
     // T H O M P S O N /////////////////////////////////////////////////////////
+    //Cuando se use solo un básico más
     public void unir(AFN afn){
+        unir(new AFN[]{afn});
+    }
+    
+    //Cualquier número mayor a 2 de AFNs a unir
+    public void unir(AFN[] afns){
         Estado nuevoIni= new Estado(true, false, 0);
         Estado nuevoFin= new Estado(false, true, token);
         
-        //Estados del AFN this
+        //Nuevo inical al estado inicial del AFN this
         nuevoIni.agregarTransicion(this.estadoInicial()); //Transiciones épsilon
         this.estadoInicial().cambiarInicial();
-
+        
+        //Nuevo inical al estado inicial de cada afn del arreglo afns
+        for(AFN afn: afns){
+            nuevoIni.agregarTransicion(afn.estadoInicial()); //Transiciones épsilon
+            afn.estadoInicial().cambiarInicial();
+        }
+        
+        //Estado final de this al nuevo final
         for(Estado e: estadosAceptacion()){
             e.agregarTransicion(nuevoFin);
             e.cambiarAceptacion();
         }
         
-        //A cada elemento del afn parámetro,
-        for(Estado e: afn.estados){
-            //verifica si es inicial para enlazarlo con épsilon al nuevo inicial,
-            if(e.esInicial()){
-                nuevoIni.agregarTransicion(e);
-                e.cambiarInicial();
-            }
-            
-            //verifica si es aceptación para enlazarlo con épsilon al nuevo final
-            if(e.esAceptacion()){
+        //Estado final de cada anf de afns al nuevo final
+        for(AFN afn: afns){
+            for(Estado e: afn.estadosAceptacion()){
                 e.agregarTransicion(nuevoFin);
                 e.cambiarAceptacion();
             }
-            
-            //y agregarlo a la lista de estados del AFN this, así se fusionan en 
-            //lugar de crear uno nuevo
-            this.estados.add(e);
         }
+        
+        //A cada elemento de cada afn de afns
+        for(AFN afn: afns){
+            for(Estado e: afn.estados){
+                //verifica si es inicial para enlazarlo con épsilon al nuevo inicial,
+                if(e.esInicial()){
+                    nuevoIni.agregarTransicion(e);
+                    e.cambiarInicial();
+                }
+
+                //verifica si es aceptación para enlazarlo con épsilon al nuevo final
+                if(e.esAceptacion()){
+                    e.agregarTransicion(nuevoFin);
+                    e.cambiarAceptacion();
+                }
+
+                //y agregarlo a la lista de estados del AFN this, así se fusionan en 
+                //lugar de crear uno nuevo
+                this.estados.add(e);
+            }
+        }
+        
         
         this.estados.add(nuevoIni);
         this.estados.add(nuevoFin);
@@ -163,7 +187,7 @@ public class AFN {
     //////////////////////////////////////////////////////////////////////////////
     
     
-    public static AFN unificarInicial(ArrayList<AFN> afns){
+    public static AFN unificarInicial(LinkedList<AFN> afns){
         AFN defAfn= new AFN("AFNTOTAL", -1); //el -1 es provisional
         Estado inicialTotal= new Estado(true, false, 0);
         int nuevosId=1;
@@ -187,7 +211,6 @@ public class AFN {
     
     @Override
     public String toString(){
-        ArrayList<Estado> ctrlImp= new ArrayList<>();
         StringBuilder sb= new StringBuilder();
         if(claseLexica.equals("AFNTOTAL"))
             sb.append("***************** AFN total ********************");
@@ -201,13 +224,11 @@ public class AFN {
             if(e.esInicial())
                 sb.append(e).append("\n");
             
-            if(!ctrlImp.contains(e))
-                if(e.numTransiciones()>0)
-                    for(Transicion t: e.obtTransiciones()){
-                        sb.append("S").append(e.id()).append(t).append("\n");
-                    }
-                    
-            ctrlImp.add(e);
+            if(e.numTransiciones()>0){
+                sb.append("S").append(e.id()).append("\n");
+                for(Transicion t: e.obtTransiciones())
+                    sb.append(t).append("\n");
+            }
         }
         
         sb.append("**************************************************");

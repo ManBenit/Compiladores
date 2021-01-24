@@ -21,7 +21,7 @@ public class CreadorAutomatas {
     public CreadorAutomatas(String cargaDeClaseslexicas, AFD auxiliar){
         claseslexicasExprReg= new HashMap();
         ClaseLexica miclaselex= new ClaseLexica( adaptarRuta(cargaDeClaseslexicas) );
-        lexic= new AnalizadorLexico(auxiliar);
+        //lexic= new AnalizadorLexico(auxiliar);
         
         
 //        for(AFN o: miclaselex.afnBasicos()){
@@ -58,7 +58,7 @@ public class CreadorAutomatas {
         
         if(tok==OR){
             if(T(f2)){
-                f.unir(f2);
+                f.unir(new AFN[]{f2});
                 if(Epr(f))
                     return true;
             }

@@ -5,27 +5,27 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 
 public class ClaseLexica {
-    private Map<String, String[]> diccionario;
-    private ArrayList<Character> ALFABETO;
-    private ArrayList<AFN> elementosUnificacion;
+    private LinkedHashMap<String, String[]> diccionario;
+    private LinkedList<Character> ALFABETO;
+    private LinkedList<AFN> elementosUnificacion;
     
     public ClaseLexica(String ruta){ //Cambiar parámmetro a File con GUI
-        diccionario= new HashMap();
-        ALFABETO= new ArrayList();
-        elementosUnificacion= new ArrayList();
+        diccionario= new LinkedHashMap();
+        ALFABETO= new LinkedList();
+        elementosUnificacion= new LinkedList();
         try{
             BufferedReader br= new BufferedReader(new FileReader(new File(ruta)));
             
             String str="";
             while((str= br.readLine()) != null){
                 String[] div= str.split("sep"); //Separar con 
-                diccionario.put(div[0], new String[]{div[2], div[1]});
+                diccionario.put(div[0].trim(), new String[]{div[2].trim(), div[1].trim()});
             }
                 
             br.close();
@@ -34,6 +34,9 @@ public class ClaseLexica {
         }
         
         hacerAlfabeto();
+        for(char c: alfabeto())
+            System.out.print(c+", ");
+        System.out.println("");
     }
     
     
@@ -69,6 +72,11 @@ public class ClaseLexica {
     }
     
     private void hacerAlfabeto(){
+        for(String c: nombreClases()){
+            String[] a= diccionario.get(c);
+            System.out.println(c+" "+a[0]+" "+a[1]);
+        }
+        
         for(String clase: nombreClases()){
             LinkedList<Character> operacion= new LinkedList();
             LinkedList<AFN> listaBasicos= new LinkedList();
@@ -84,14 +92,14 @@ public class ClaseLexica {
                     int[] lims= new int[2]; //limInf, limSup
                     int pos=0;
                     int j=i+1;
-                    if(clase.equals("SIMB")){ //Cuando se haga el alfabeto de los autómatas
+                    if(clase.equals("SIMB")){ //Cuando se haga el alfabeto de los autómatas,
                         StringBuilder sb= new StringBuilder("");
                         while(expPartes[j]!=']'){
                             sb.append(expPartes[j]);
                             j+=1;
                         }
                         String[] nLims= sb.toString().split("-");
-                        lims[0]= Integer.parseInt(nLims[0]);
+                        lims[0]= Integer.parseInt(nLims[0]);//se consideran los caracteres imprimibles de ASCII
                         lims[1]= Integer.parseInt(nLims[1]);
                     }
                     else{
@@ -107,21 +115,6 @@ public class ClaseLexica {
                     for(int a=lims[0]; a<=lims[1]; a++)
                         if(!ALFABETO.contains((char)a))
                             ALFABETO.add((char)a);
-//                    //De paso, crear el AFN básico del rango encontrado
-//                    AFN basicoRango= new AFN(clase, tokenClase(clase));
-//                    basicoRango.crearBasico( (char)lims[0], (char)lims[1] );
-////                    if(operacion.getFirst()=='&'){
-////                        listaBasicos.getFirst().concatenar(basicoRango);
-////                        operacion.pop();
-////                    }
-////                    else if(operacion.getFirst()=='|'){
-////                        listaBasicos.getFirst().unir(basicoRango);
-////                        operacion.pop();
-////                    }
-////                    else
-//                        listaBasicos.push(basicoRango);
-////                            listaBasicos.add( String.valueOf((char)lims[0])+String.valueOf((char)lims[1]) );    
-
                     i=j;
                 }
                 
@@ -129,21 +122,6 @@ public class ClaseLexica {
                 else if(expPartes[i]=='\\'){ //Si encuentra una diagonal invertida,
                     if(!ALFABETO.contains(expPartes[i+1])){
                         ALFABETO.add(expPartes[i+1]); //el siguiente caracter es parte del alfabeto
-                    
-//                        //De paso, crear el AFN básico del símbolo especificado con \
-//                        AFN basicoDiagInv= new AFN(clase, tokenClase(clase));
-//                        basicoDiagInv.crearBasico( expPartes[i+1] );
-////                        if(operacion.getFirst()=='&'){
-////                            listaBasicos.getFirst().concatenar(basicoDiagInv);
-////                            operacion.pop();
-////                        }
-////                        else if(operacion.getFirst()=='|'){
-////                            listaBasicos.getFirst().unir(basicoDiagInv);
-////                            operacion.pop();
-////                        }
-////                        else
-//                            listaBasicos.push(basicoDiagInv);
-////                        listaBasicos.add(expPartes[i+1]);
                     }
                     
                     i+=1; //y saltas lo que ya agregaste
@@ -162,102 +140,16 @@ public class ClaseLexica {
                       ){
                         if(!ALFABETO.contains(expPartes[i])){
                             ALFABETO.add(expPartes[i]);
-                        
-//                            //De paso, crear el AFN básico del símbolo
-//                            AFN basico= new AFN(clase, tokenClase(clase));
-//                            basico.crearBasico( expPartes[i] );
-////                            if(operacion.getFirst()=='&'){
-////                                listaBasicos.getFirst().concatenar(basico);
-////                                operacion.pop();
-////                            }
-////                            else if(operacion.getFirst()=='|'){
-////                                listaBasicos.getFirst().unir(basico);
-////                                operacion.pop();
-////                            }
-////                            else
-//                                listaBasicos.push(basico);
-////                            listaBasicos.add(expPartes[i]);
                         }
-                    }
-                    //Caso de los operadores (considera *, +, ?, | y &)
-                    else{
-                        
-                        
-//                        switch(expPartes[i]){
-//                            case '+':
-//                                listaBasicos.getFirst().cTransitiva();
-//                                break;
-//                                
-//                            case '*':
-//                                listaBasicos.getFirst().cEstrella();
-//                                break;
-//                                
-//                            case '?':
-//                                listaBasicos.getFirst().opcional();
-//                                break;
-//                                
-//                            case '&':
-//                                operacion.push(expPartes[i]);
-//                                break;
-//                                
-//                            case '|':
-//                                operacion.push(expPartes[i]);
-//                                break;
-//                                
-//                            case '(':
-//                                operacion.push(expPartes[i]);
-//                                break;
-//                                
-//                            case ')':
-//                                operacion.pop(); //Sacar el paréntesis izquierdo      
-//                                break;
-//                        }
-                        
-                        
                     }
                 }
 
                 i+=1;
             }
-            
-//            if(!operacion.isEmpty()){
-//                AFN pend= listaBasicos.pop();
-//                if(operacion.getFirst()=='&')
-//                    listaBasicos.getFirst().concatenar(pend);
-//                else if(operacion.getFirst()=='|')
-//                    listaBasicos.getFirst().unir(pend);
-//                
-//                elementosUnificacion.add(pend);
-//            }
-//            else{
-//                elementosUnificacion.add(listaBasicos.pop());
-//            }
-            
-            
-            
         }
-        
-        /*for(char c: ALFABETO){
-            System.out.println(c);
-        }*/
-        
-        /*try{
-            FileWriter fw= new FileWriter(new File("..\\sumadre.txt"));
-            for(char c: ALFABETO){
-                fw.append(c);
-                fw.append('\n');
-            }
-            fw.close();
-        }catch(IOException ex){
-            System.out.println("error");
-        }*/
     }
     
-//    public LinkedList<AFN> afnBasicos(){
-//        return listaBasicos;
-//    }
-    
-    public ArrayList<Character> alfabeto(){
+    public LinkedList<Character> alfabeto(){
         return ALFABETO;
     }
     

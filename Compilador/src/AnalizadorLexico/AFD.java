@@ -1,8 +1,9 @@
 package AnalizadorLexico;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -10,12 +11,12 @@ public class AFD{
     private LinkedList<Estado> estados;
     //private Map<String, Integer> yyList;
     
-    private ArrayList<Character> alfabeto;
+    private LinkedList<Character> alfabeto;
     private int[][] tablaEstados;
     private final String nombre;
-    private LinkedList<HashSet<Estado>> conjEstados;
+    private LinkedList<LinkedHashSet<Estado>> conjEstados;
     
-    public AFD(String nombre, ArrayList<Character> alfabeto){
+    public AFD(String nombre, LinkedList<Character> alfabeto){
         this.alfabeto= alfabeto;
         estados= new LinkedList<>();
         //yyList= new HashMap();
@@ -26,23 +27,26 @@ public class AFD{
     
     public void convertir(AFN afn){
         conjEstados= obtConjEdos(afn);
+        LinkedList<Integer> ids= new LinkedList();
         //System.out.println("Aquí");
         //Crear estado para cada subconjunto
         int idDisc=conjEstados.size()-1; //Discriminante del ID
         int id=0;
         
         //Crear un nuevo estado por cada subconjunto de estados
-        for(HashSet<Estado> conjunto: conjEstados){
+        for(int i=0; i<conjEstados.size(); i++){
             boolean ini= false, acep=false;
             int token=0;
             Estado nEdo;
             
-            for(Estado e: conjunto){
-                id= e.token()+idDisc; //ID: token + el conjunto que representa
+            //Si contiene estado de aceptación o es el inicial
+            for(Estado e: conjEstados.get(i)){
+                //id= e.token()+idDisc; //ID: token + el conjunto que representa
+                
                 if(e.esAceptacion()){
                     acep=true;
                     token= e.token();
-                    break;
+                    break; //Ver si se puede quitar el brak aquí y en la de abajo
                 }
                 if(e.esInicial()){
                     ini=true;
@@ -51,18 +55,21 @@ public class AFD{
             }
             
             nEdo= new Estado(ini, acep, token);
-            nEdo.nuevoId(id);
-            estados.addFirst(nEdo);
+            
+            nEdo.nuevoId(i);
+            estados.add(nEdo);
             idDisc-=1;
         }
-        
-        HashSet<Estado> conjAux;
-        int i=1; //Sea Sn= irA(Sk, s), i representa k
-        while(i<conjEstados.size()){
+//        for(Estado e: estados)
+//            System.out.println(e);
+        LinkedHashSet<Estado> conjAux;
+        int i=0; //Sea Sn= irA(Sk, s), i representa k
+        while(i<conjEstados.size()){ //1<11
             for(char s: alfabeto){
                 conjAux= irA(conjEstados.get(i), s);
                 if(conjAux.size()>0)
-                    representante(conjEstados.get(i)).agregarTransicion(s, representante(conjAux));
+                    //representante(conjEstados.get(i)).agregarTransicion(s, representante(conjAux));
+                    estados.get(i).agregarTransicion(s, estados.get( conjEstados.indexOf(conjAux) ) );
             }
             i+=1;
         }
@@ -71,23 +78,6 @@ public class AFD{
         //renombrarEstadosEnTabla(); //Método para que sean números consecutivos en la tabla
     }
     
-    //Estado creado que representa un conjunto de estados
-    private Estado representante(HashSet<Estado> conjunto){
-        int idDisc=conjEstados.size()-1;
-        Estado ret=null;
-        for(Estado edoConj: conjunto){
-            for(Estado e: estados){
-                if(conjEstados.get(idDisc).equals(conjunto)){
-                    ret=e;
-                    break;
-                }
-                idDisc-=1;
-            }
-            idDisc=conjEstados.size()-1;
-        }
-                    
-        return ret;
-    }
     
     private void crearTabla(){
         int filas= conjEstados.size();
@@ -105,32 +95,22 @@ public class AFD{
             tablaEstados[indice][0]= e.id();
             tablaEstados[indice][columnas-1]= e.token();
             for(Transicion t: e.obtTransiciones()){
-                for(int i=t.simInicial(); i<=t.simFinal(); i++){
-                    tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();//******problemou
+                for(int i=(int)t.simInicial(); i<=(int)t.simFinal(); i++){
+//                    if(t.destino()!=null){
+                        tablaEstados[indice][alfabeto.indexOf((char)i)+1]= t.destino().id();//******problemou
+//                    }
                 }
             }
-                
+               
             indice+=1;
         }
-    }
-    
-    //Este método renombra lso estados ÚNICAMENTE EN LA TABLA DE ESTADOS para
-    //verlos como números consecutivos
-    private void renombrarEstadosEnTabla(){
-        ArrayList<Integer> idEdos= new ArrayList<>();
-        for(Estado e: estados)
-            idEdos.add(e.id());
-        for(int i=0; i<tablaEstados.length; i++)
-            for(int j=0; j<tablaEstados[i].length-1; j++)
-                if(tablaEstados[i][j]>-1)
-                    tablaEstados[i][j]=idEdos.indexOf(tablaEstados[i][j]);
     }
     
     public int[][] tablaDeEstados(){
         return tablaEstados;
     }
     
-    public ArrayList<Character> alfabeto(){
+    public LinkedList<Character> alfabeto(){
         return alfabeto;
     }
     
@@ -138,11 +118,11 @@ public class AFD{
         return estados;
     }
     
-    private LinkedList<HashSet<Estado>> obtConjEdos(AFN afn){
-        HashSet<Estado> cEstados; //Conjuntos de estados a analizar
-        LinkedList<HashSet<Estado>> S= new LinkedList(); //Pila de comprobación
-        HashSet<HashSet<Estado>> utiles= new HashSet(); //Estados que servirán para el AFD, HashSet garantiza que no se repitan
-        LinkedList<HashSet<Estado>> utilRet= new LinkedList(); //Se regresará el conjunto en forma de lista apra manejarlo más fácilmente
+    private LinkedList<LinkedHashSet<Estado>> obtConjEdos(AFN afn){
+        LinkedHashSet<Estado> cEstados; //Conjuntos de estados a analizar
+        LinkedList<LinkedHashSet<Estado>> S= new LinkedList(); //Pila de comprobación
+        LinkedHashSet<LinkedHashSet<Estado>> utiles= new LinkedHashSet(); //Estados que servirán para el AFD, LinkedHashSet garantiza que no se repitan
+        LinkedList<LinkedHashSet<Estado>> utilRet= new LinkedList(); //Se regresará el conjunto en forma de lista para manejarlo más fácilmente
         
         //Calcular S0
         cEstados= cerraduraEpsilon(afn.estadoInicial());
@@ -151,12 +131,13 @@ public class AFD{
         
         //Análisis del resto de estados
         int i=0, cont=0;
-        while(i<S.size()){
+        while(i<S.size()){ //RECUERDA QUITAR EL +1
             cEstados= S.pop();
             for(char s: alfabeto){
-                HashSet<Estado> ira= irA(cEstados, s);
+                LinkedHashSet<Estado> ira= irA(cEstados, s);
                 if(ira.size()>0){  
                     if(!S.isEmpty()){
+                        //Se comprueba solo el tope porque en el rango peude salir el mismo conjunto y siempre es un paso antes
                         if(!S.getLast().equals(ira)){
 
                             cont++;   
@@ -175,17 +156,29 @@ public class AFD{
             }
             i+=1;
         }
-        for(HashSet<Estado> hs: utiles)
+        
+        //Pasar el conjunto a lista
+        for(LinkedHashSet<Estado> hs: utiles)
             utilRet.add(hs);
+        
+        for(LinkedHashSet<Estado> hs: utilRet){
+            System.out.println("******Conjunto*******");
+            for(Estado e: hs){
+                System.out.print(e.id()+", ");
+                if(e.esAceptacion())
+                    System.out.print("Aceptación "+e.id()+"->"+e.token()+", ");
+            }
+            System.out.println("");
+        }
         
         return utilRet;
     }
     
-    private HashSet<Estado> cerraduraEpsilon(Estado e){
+    private LinkedHashSet<Estado> cerraduraEpsilon(Estado e){
         Estado p;
         
         LinkedList<Estado> S= new LinkedList();
-        HashSet<Estado> R= new HashSet(); //Estados ya analizados
+        LinkedHashSet<Estado> R= new LinkedHashSet(); //Estados ya analizados
         S.push(e);
         
         //Se ve cada estado si hay transiciones
@@ -202,8 +195,8 @@ public class AFD{
         return R;
     }
     
-    private HashSet<Estado> cerraduraEpsilon(HashSet<Estado> E){
-        HashSet R= new HashSet();
+    private LinkedHashSet<Estado> cerraduraEpsilon(LinkedHashSet<Estado> E){
+        LinkedHashSet R= new LinkedHashSet();
         
         for(Estado e: E)
             R.addAll(cerraduraEpsilon(e));
@@ -211,8 +204,8 @@ public class AFD{
         return R;            
     }
     
-    private HashSet<Estado> mover(Estado e, char s){
-        HashSet<Estado> R= new HashSet();
+    private LinkedHashSet<Estado> mover(Estado e, char s){
+        LinkedHashSet<Estado> R= new LinkedHashSet();
         for(Transicion t: e.obtTransiciones())
             if((int)s>=(int)t.simInicial() && (int)s<=(int)t.simFinal()) //Si se encuentra dentro del rango
                 R.add(t.destino());
@@ -221,25 +214,32 @@ public class AFD{
         return R;
     }
     
-    private HashSet<Estado> mover(HashSet<Estado> E, char s){
-        HashSet<Estado> R= new HashSet();
+    private LinkedHashSet<Estado> mover(LinkedHashSet<Estado> E, char s){
+        LinkedHashSet<Estado> R= new LinkedHashSet();
         for(Estado e: E)
             R.addAll(mover(e, s));
         
         return R;
     }
     
-    private HashSet<Estado> irA(HashSet<Estado> E, char s){
+    private LinkedHashSet<Estado> irA(LinkedHashSet<Estado> E, char s){
         return cerraduraEpsilon(mover(E, s));
     }
     
-    
+    public Estado estadoInicial(){
+        Estado ret=null;
+        for(Estado e: estados)
+            if(e.esInicial()){
+                ret=e;
+                break;
+            }
+        return ret;        
+    }
     
     
     
     @Override
     public String toString(){
-        ArrayList<Estado> ctrlImp= new ArrayList<>();
         StringBuilder sb= new StringBuilder();
         sb.append("***************** AFD ").append(nombre).append(" ***********************");
         
@@ -249,14 +249,11 @@ public class AFD{
         for(Estado e: estados){
             if(e.esInicial())
                 sb.append(e).append("\n");
-            
-            if(!ctrlImp.contains(e))
-                if(e.numTransiciones()>0)
-                    for(Transicion t: e.obtTransiciones()){
-                        sb.append("S").append(e.id()).append(t).append("\n");
-                    }
-                    
-            ctrlImp.add(e);
+            if(e.numTransiciones()>0){
+                sb.append("S").append(e.id()).append("\n");
+                for(Transicion t: e.obtTransiciones())
+                    sb.append(t).append("\n");
+            }
         }
         
         sb.append("**************************************************");

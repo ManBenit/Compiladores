@@ -4,4 +4,4 @@ T -> CT'
 T' -> &CT' | ep
 C -> FC'
 C' -> +C' | *C' | ?C' | ep
-F -> (E) | [simb-simb] | \simb | simb
+F -> (E) | SIMB

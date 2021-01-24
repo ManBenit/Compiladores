@@ -20,6 +20,7 @@ public class CreadorAnaLex {
         gramLeida= new LinkedHashMap();
         mapearGramatica(ruta);
         cargarSimbolos(); //Para hacer tabla LL1
+        iniciar();
 //        System.out.print("\t");
 //        for(String e: encabezado)
 //            System.out.print(e+"\t");
@@ -224,7 +225,7 @@ public class CreadorAnaLex {
         return R;
     }
     
-    public void firstest(){ 
+    private void iniciar(){ 
         LinkedList<String> auxCol= new LinkedList(); //columna 0 de la tabla
         for(int i=0; i<tablaLL1.length; i++)
             auxCol.add(tablaLL1[i][0]);

@@ -7,7 +7,7 @@ Gramática de autómatas
 E -> EorT | T
 T -> T&C | C
 C -> C+ | C* | C? | F
-F -> (E) | S
+F -> (E) | SIMB
 
 E -> EorT | T
 T -> T&C | C

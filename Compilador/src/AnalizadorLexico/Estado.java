@@ -1,20 +1,23 @@
 package AnalizadorLexico;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 public class Estado {
     private static int idCuenta=0;
     private int id;
     private boolean aceptacion;
     private boolean inicial;
-    private HashSet<Transicion> transiciones;
+    private LinkedHashSet<Transicion> transiciones;
     private int token;
         
     public Estado(boolean ini, boolean acept, int token){
-        transiciones= new HashSet();
+        transiciones= new LinkedHashSet();
         inicial=ini;
         aceptacion= acept;
-        this.token=token;
+        if(!acept)
+            this.token=0;
+        else
+            this.token=token;
         id= idCuenta;
         idCuenta+=1;
     }
@@ -29,7 +32,7 @@ public class Estado {
     
     //Modelado de nueva transición épsilon
     public void agregarTransicion(Estado destino){
-        this.transiciones.add(new Transicion('\0', destino));
+        this.transiciones.add(new Transicion(destino));
     }
     
     //Puede haber una transición existente que solo hay que asignar
@@ -70,7 +73,7 @@ public class Estado {
         inicial= !inicial;
     }
     
-    public HashSet<Transicion> obtTransiciones(){
+    public LinkedHashSet<Transicion> obtTransiciones(){
         return transiciones;
     }
     

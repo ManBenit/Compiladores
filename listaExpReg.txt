@@ -34,3 +34,16 @@ CORCH_Isep\]sep9
 GUIONsep\-sep10
 SIMBsep(\\[0-255])|[0-255]sep11
 
+CLASES DE OPERACIONES ARITMÉTICAS
+NUMsep[0-9]+|[0-9]+.[0-9]+sep10
+OPERsep\+|\-|\*|\/sep20
+
+NUMsep[0-9]+sep10
+NUMDECsep[0-9]+.[0-9]+sep20
+SUMsep\+sep30
+RESsep\-sep40
+MULTsep\*sep50
+DIVsep\/sep60
+
+NUMsep[0-9]*.[0-9]+sep10
+OPERsep\+|\-|\*|\/sep2
